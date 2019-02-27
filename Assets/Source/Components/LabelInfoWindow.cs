@@ -9,10 +9,6 @@ public class LabelInfoWindow : MonoBehaviour
     public NavMeshController navMeshController;
     private JSONObject labelInfo;
     // Start is called before the first frame update
-    void Start()
-    {
-        text.text = "";
-    }
 
     public void Init(JSONObject label)
     {
@@ -32,11 +28,5 @@ public class LabelInfoWindow : MonoBehaviour
         Debug.Log(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
         Debug.Log(labelInfo.GetField(AppUtils.JSON_NAME).str);
         //navMeshController.SetDestination(AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str));
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
