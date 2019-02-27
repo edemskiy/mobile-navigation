@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class AboveCamera : MonoBehaviour
 {
@@ -28,7 +27,7 @@ public class AboveCamera : MonoBehaviour
         }
         */
 
-        if (IsPointerOverUIObject())
+        if (AppUtils.IsPointerOverUIObject())
         {
             return;
         }
@@ -109,14 +108,5 @@ public class AboveCamera : MonoBehaviour
     public void ZoomOut(float zoom_coeff)
     {
         cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoom_coeff, 10f, 40f);
-    }
-
-    private bool IsPointerOverUIObject()
-    {
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-        return results.Count > 0;
     }
 }

@@ -27,6 +27,11 @@ public class LabelsController : MonoBehaviour
 
     void Update()
     {
+        if (AppUtils.IsPointerOverUIObject())
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
