@@ -17,6 +17,9 @@ public class LabelsController : MonoBehaviour
 
     private string dataPath;
 
+    // для хранения точки касания экрана
+    private Vector3 touchPoint;
+
     void Start()
     {
         markersStore = new GameObject("Markers");
@@ -38,8 +41,18 @@ public class LabelsController : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
+                touchPoint = hit.point;
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
                 Label label = hit.transform.gameObject.GetComponent<Label>();
-                if(label != null)
+                if (label != null && touchPoint == hit.point)
                 {
                     labelInfoWindow.gameObject.SetActive(true);
                     labelInfoWindow.Init(LabelsList.self.getLabel(label.labelName));
