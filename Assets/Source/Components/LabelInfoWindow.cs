@@ -7,8 +7,8 @@ public class LabelInfoWindow : MonoBehaviour
 {
     public Text text;
     public NavMeshController navMeshController;
+    public Button buttonFrom, buttonTo;
     private JSONObject labelInfo;
-    // Start is called before the first frame update
 
     public void Init(JSONObject label)
     {
@@ -18,15 +18,19 @@ public class LabelInfoWindow : MonoBehaviour
 
     public void OnRouteFromClick()
     {
-        Debug.Log(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
-        Debug.Log(labelInfo.GetField(AppUtils.JSON_NAME).str);
-        //navMeshController.SetSource(AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str));
+        navMeshController.SetSource(
+            AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
+            );
+        buttonFrom.GetComponentInChildren<Text>().text = labelInfo.GetField(AppUtils.JSON_NAME).str;
+        this.gameObject.SetActive(false);
     }
 
     public void OnRouteToClick()
     {
-        Debug.Log(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
-        Debug.Log(labelInfo.GetField(AppUtils.JSON_NAME).str);
-        //navMeshController.SetDestination(AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str));
+        navMeshController.SetDestination(
+            AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
+            );
+        buttonTo.GetComponentInChildren<Text>().text = labelInfo.GetField(AppUtils.JSON_NAME).str;
+        this.gameObject.SetActive(false);
     }
 }
