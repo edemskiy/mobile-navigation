@@ -6,7 +6,8 @@ public class LevelsController : MonoBehaviour {
 
     [SerializeField]
     GameObject[] levels;
-    private GameObject activeLevel;
+    public GameObject activeLevel;
+    public LabelsController labelsController;
     // Use this for initialization
     void Start () {
         SetActive(levels[0]);
@@ -19,6 +20,7 @@ public class LevelsController : MonoBehaviour {
             level.SetActive(level == newActiveLevel);
         }
         activeLevel = newActiveLevel;
+        labelsController.ShowOnlyActiveMarkers();
     }
     public Vector3 getActiveLevelPosition()
     {

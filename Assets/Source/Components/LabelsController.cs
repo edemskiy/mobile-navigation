@@ -12,20 +12,37 @@ public class LabelsController : MonoBehaviour
     public GameObject markerPrefab;
     public GameObject content;
     public LevelsController levelsController;
-    private float prevActiveLevelPositionY;
+    public LabelInfoWindow labelInfoWindow;
     private GameObject markersStore;
 
     private string dataPath;
 
     void Start()
     {
+        markersStore = new GameObject("Markers");
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
         LoadLabels();
+        ShowOnlyActiveMarkers();
     }
 
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                Label label = hit.transform.gameObject.GetComponent<Label>();
+                Debug.Log(hit.point);
+                Debug.Log(hit.transform.gameObject);
+                if(label != null)
+                {
+                    labelInfoWindow.gameObject.SetActive(true);
+                    labelInfoWindow.Init(LabelsList.self.getLabel(label.labelName));
+                }
+            }
+        }
     }
 
     private void ClearLabelsButtonsList()
@@ -101,12 +118,11 @@ public class LabelsController : MonoBehaviour
             {
                 string name = Regex.Unescape(item.GetField(AppUtils.JSON_NAME).str);
                 LabelsList.self.update(name, item);
-                /*
+                
                 GameObject newLabel = GameObject.Instantiate(markerPrefab);
                 newLabel.transform.position = AppUtils.stringToVector3(item.GetField(AppUtils.JSON_LOCATION).str);
-                newLabel.transform.parent = markersStore.transform;
+                newLabel.transform.SetParent(markersStore.transform);
                 newLabel.GetComponent<Label>().SetName(name);
-                */
 
                 GameObject newButton = GameObject.Instantiate(buttonPrefab);
                 newButton.name = name;
@@ -119,6 +135,17 @@ public class LabelsController : MonoBehaviour
             {
                 Debug.Log("MainScreen: labelsListJSON.list item == null ");
             }
+        }
+    }
+
+    public void ShowOnlyActiveMarkers()
+    {
+        foreach (Transform marker in markersStore.transform)
+        {
+            marker.gameObject.SetActive((marker.gameObject.transform.position.y < levelsController.getActiveLevelPosition().y + 1f) &&
+                (marker.gameObject.transform.position.y > levelsController.getActiveLevelPosition().y - 5f));
+            // float markerPos = MyUtils.stringToVector3(LabelsList.self.getLabel(marker.GetComponent<Label>().GetName()).GetField(MyUtils.JSON_LOCATION).str).y;
+            // content.transform.Find(marker.GetComponent<Label>().GetName()).gameObject.SetActive(marker.gameObject.activeSelf);
         }
     }
 
