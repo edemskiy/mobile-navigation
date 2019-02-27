@@ -14,7 +14,8 @@ public class LabelInfoWindow : MonoBehaviour
 
     public void Init(JSONObject label)
     {
-        text.text = label.str;
+        
+        text.text = label.ToString();
     }
 
     // Update is called once per frame

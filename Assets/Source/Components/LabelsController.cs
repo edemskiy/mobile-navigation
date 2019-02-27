@@ -34,8 +34,6 @@ public class LabelsController : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Label label = hit.transform.gameObject.GetComponent<Label>();
-                Debug.Log(hit.point);
-                Debug.Log(hit.transform.gameObject);
                 if(label != null)
                 {
                     labelInfoWindow.gameObject.SetActive(true);

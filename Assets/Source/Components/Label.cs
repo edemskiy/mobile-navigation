@@ -16,17 +16,15 @@ public class Label : MonoBehaviour {
     {
         labelName = newName;
         GetComponent<TextMeshPro>().text = newName;
-        GetComponent<TextMeshPro>().raycastTarget = true;
-        Debug.Log(GetComponent<TextMeshPro>().raycastTarget);
     }
 
     public string GetName()
     {
         return labelName;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 }
