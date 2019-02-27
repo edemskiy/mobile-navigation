@@ -178,12 +178,14 @@ public class NavMeshController: MonoBehaviour
 
     private void Update()
     {
-        
+
+        /*
         if (prevActiveLevelPositionY != levelsController.getActiveLevelPosition().y)
         {
             ShowOnlyActiveFloorPath();           
             prevActiveLevelPositionY = levelsController.getActiveLevelPosition().y;
         }
+        */
         
     }
 }
