@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class LabelInfoWindow : MonoBehaviour
 {
     public Text text;
+    public NavMeshController navMeshController;
     // Start is called before the first frame update
     void Start()
     {
