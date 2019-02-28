@@ -19,15 +19,7 @@ public class LabelButton : MonoBehaviour {
 
     public void OnClick()
     {
-        //labelsController.SetPoint(text.text);
+        GetComponentInParent<LabelsButtonsStorage>()
+            .OnLabelButtonClick(LabelsList.self.getLabel(text.text));
     }
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

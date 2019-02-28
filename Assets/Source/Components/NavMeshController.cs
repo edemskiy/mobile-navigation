@@ -141,7 +141,7 @@ public class NavMeshController: MonoBehaviour
             if ((path.corners[path.corners.Length - 1] - target.transform.position).magnitude > 0.1f)
             {
                 Debug.Log("Невозможно построить маршрут");
-                player.SetActive((player.transform.position.y < levelsController.getActiveLevelPosition().y) && (player.transform.position != Vector3.zero));
+                player.SetActive((player.transform.position.y < LevelsController.activeLevelPosition.y) && (player.transform.position != Vector3.zero));
                 return;
             }
             
@@ -181,10 +181,10 @@ public class NavMeshController: MonoBehaviour
     {
         foreach (Transform line in pathStore.transform)
         {
-            line.gameObject.SetActive(line.gameObject.transform.position.y < levelsController.getActiveLevelPosition().y + 1.3f);
+            line.gameObject.SetActive(line.gameObject.transform.position.y < LevelsController.activeLevelPosition.y + 1.3f);
         }
-        player.SetActive((player.transform.position.y < levelsController.getActiveLevelPosition().y) && (player.transform.position != Vector3.zero));
-        target.SetActive((target.transform.position.y < levelsController.getActiveLevelPosition().y) && (target.transform.position != Vector3.zero));
+        player.SetActive((player.transform.position.y < LevelsController.activeLevelPosition.y) && (player.transform.position != Vector3.zero));
+        target.SetActive((target.transform.position.y < LevelsController.activeLevelPosition.y) && (target.transform.position != Vector3.zero));
     }
 
     // поменять местами точки "А" и "Б"

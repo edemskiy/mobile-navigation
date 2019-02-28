@@ -12,8 +12,7 @@ public class LabelsController : MonoBehaviour
     public GameObject buttonPrefab;
     public GameObject markerPrefab;
     public GameObject content;
-    public LevelsController levelsController;
-    public LabelInfoWindow labelInfoWindow;
+    public LabelsButtonsStorage labelsButtonsStorage;
     private GameObject markersStore;
 
     private UnityAction floorChangeListener;
@@ -76,8 +75,7 @@ public class LabelsController : MonoBehaviour
                 Label label = hit.transform.gameObject.GetComponent<Label>();
                 if (label != null && touchPoint == hit.point)
                 {
-                    labelInfoWindow.gameObject.SetActive(true);
-                    labelInfoWindow.Init(LabelsList.self.getLabel(label.labelName));
+                    labelsButtonsStorage.OpenLabelInfoWindow(LabelsList.self.getLabel(label.labelName));
                 }
             }
         }
@@ -162,12 +160,7 @@ public class LabelsController : MonoBehaviour
                 newLabel.transform.SetParent(markersStore.transform);
                 newLabel.GetComponent<Label>().SetName(name);
 
-                GameObject newButton = GameObject.Instantiate(buttonPrefab);
-                newButton.name = name;
-                newButton.GetComponent<LabelButton>().SetText(name);
-                newButton.GetComponent<LabelButton>().SetLabelsController(this);
-                newButton.transform.SetParent(content.transform);
-                newButton.transform.localScale = Vector3.one;
+                labelsButtonsStorage.AddLabelButton(name);
             }
             else
             {
@@ -180,8 +173,8 @@ public class LabelsController : MonoBehaviour
     {
         foreach (Transform marker in markersStore.transform)
         {
-            marker.gameObject.SetActive((marker.gameObject.transform.position.y < levelsController.getActiveLevelPosition().y + 1f) &&
-                (marker.gameObject.transform.position.y > levelsController.getActiveLevelPosition().y - 5f));
+            marker.gameObject.SetActive((marker.gameObject.transform.position.y < LevelsController.activeLevelPosition.y + 1f) &&
+                (marker.gameObject.transform.position.y > LevelsController.activeLevelPosition.y - 5f));
             // float markerPos = MyUtils.stringToVector3(LabelsList.self.getLabel(marker.GetComponent<Label>().GetName()).GetField(MyUtils.JSON_LOCATION).str).y;
             // content.transform.Find(marker.GetComponent<Label>().GetName()).gameObject.SetActive(marker.gameObject.activeSelf);
         }

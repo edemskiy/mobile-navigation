@@ -7,6 +7,7 @@ public class LevelsController : MonoBehaviour {
     [SerializeField]
     GameObject[] levels;
     public GameObject activeLevel;
+    public static Vector3 activeLevelPosition;
     // Use this for initialization
     void Start () {
         SetActive(levels[0]);
@@ -19,11 +20,8 @@ public class LevelsController : MonoBehaviour {
             level.SetActive(level == newActiveLevel);
         }
         activeLevel = newActiveLevel;
+        activeLevelPosition = activeLevel.transform.position;
         // EventManager.TriggerEvent(AppUtils.floorChanged);
-    }
-    public Vector3 getActiveLevelPosition()
-    {
-        return activeLevel.transform.position;
     }
 	
 	// Update is called once per frame
