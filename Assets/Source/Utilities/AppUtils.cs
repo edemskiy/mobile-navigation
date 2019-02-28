@@ -11,6 +11,9 @@ public class AppUtils
     public const string labelsURL = "http://127.0.0.1:8000/api/codes/";
     public const string labelsLocalFileName = "labels.txt";
 
+    // Events
+    public const string floorChanged = "floorChanged";
+
 
     // JSON поля
     public const string JSON_ID = "id";

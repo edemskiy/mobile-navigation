@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
+using UnityEngine.Events;
 public class LabelsController : MonoBehaviour
 {
     //public PointsInputsController pointsInputsController;
@@ -14,6 +15,8 @@ public class LabelsController : MonoBehaviour
     public LevelsController levelsController;
     public LabelInfoWindow labelInfoWindow;
     private GameObject markersStore;
+
+    private UnityAction floorChangeListener;
 
     private string dataPath;
 
@@ -25,6 +28,25 @@ public class LabelsController : MonoBehaviour
         markersStore = new GameObject("Markers");
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
         LoadLabels();
+        ShowOnlyActiveMarkers();
+    }
+
+    private void Awake()
+    {
+        floorChangeListener = new UnityAction(OnFloorChange);
+    }
+
+    private void OnEnable()
+    {
+        EventManager.StartListening(AppUtils.floorChanged, floorChangeListener);
+    }
+    private void OnDisable()
+    {
+        EventManager.StopListening(AppUtils.floorChanged, floorChangeListener);
+    }
+
+    private void OnFloorChange()
+    {
         ShowOnlyActiveMarkers();
     }
 

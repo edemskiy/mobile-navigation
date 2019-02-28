@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class NavMeshController: MonoBehaviour 
 {
@@ -23,10 +24,12 @@ public class NavMeshController: MonoBehaviour
     // целевая точка пути
     public GameObject target;
     
-    // объект пути в котором будут храниться точки
+    // объект пути
     private NavMeshPath path;
     // объект пути в который будут "складываться" его части (отрезки пути)
     private GameObject pathStore;
+
+    private UnityAction floorChangeListener;
 
     private void Start() 
 	{
@@ -70,6 +73,25 @@ public class NavMeshController: MonoBehaviour
         }
         */
         
+    }
+
+    private void Awake()
+    {
+        floorChangeListener = new UnityAction(OnFloorChange);
+    }
+
+    private void OnEnable()
+    {
+        EventManager.StartListening(AppUtils.floorChanged, floorChangeListener);
+    }
+    private void OnDisable()
+    {
+        EventManager.StopListening(AppUtils.floorChanged, floorChangeListener);
+    }
+
+    private void OnFloorChange()
+    {
+        ShowOnlyActiveFloorPath();
     }
 
     public void DisableNavAgent()
@@ -178,14 +200,6 @@ public class NavMeshController: MonoBehaviour
 
     private void Update()
     {
-
-        /*
-        if (prevActiveLevelPositionY != levelsController.getActiveLevelPosition().y)
-        {
-            ShowOnlyActiveFloorPath();           
-            prevActiveLevelPositionY = levelsController.getActiveLevelPosition().y;
-        }
-        */
         
     }
 }
