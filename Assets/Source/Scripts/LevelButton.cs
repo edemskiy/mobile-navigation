@@ -12,7 +12,7 @@ public class LevelButton : MonoBehaviour {
     public void SetActive()
     {     
         GetComponentInParent<BuildingPopup>().SetActiveLevel(level);
-        GetComponentInChildren<Text>().color = new Color(1f, 0.92f, 0.16f, 1.0f);
+        GetComponentInChildren<Text>().color = AppUtils.LightYellowColor;
         activeLevelPositionY = level.transform.position.y;
         EventManager.TriggerEvent(AppUtils.floorChanged);
     }

@@ -11,11 +11,19 @@ public class AppUtils
     public const string labelsURL = "http://127.0.0.1:8000/api/codes/";
     public const string labelsLocalFileName = "labels.txt";
 
+    // Names
+    public const string ButtonFrom_DefaultName = "ОТКУДА";
+    public const string ButtonTo_DefaultName = "КУДА";
+
+    // Colors
+    public static Color LightYellowColor = new Color(1f, 0.92f, 0.16f, 1.0f);
+    public static Color LightRedColor = new Color(1f, 0.41f, 0.36f, 1.0f);
+    public static Color LightBlueColor = new Color(0.28f, 0.65f, 1f, 1.0f);
+
     // Events
     public const string floorChanged = "floorChanged";
 
-
-    // JSON поля
+    // JSON fields
     public const string JSON_ID = "id";
     public const string JSON_NAME = "name";
     public const string JSON_KEY = "key";

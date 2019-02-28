@@ -142,8 +142,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 12.219054, w: -1.6493324}
+  m_margin: {x: 6.7885714, y: 0.24450122, z: 6.447789, w: 0.47850484}
   m_textInfo:
     textComponent: {fileID: 0}
     characterCount: 4
@@ -233,5 +233,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5.5929565, y: 2.6853302, z: 0}
-  m_Center: {x: -6.017908, y: -0.98218614, z: -0.0000000018633877}
+  m_Size: {x: 5.2160425, y: 2.4969945, z: 0}
+  m_Center: {x: 0.18038034, y: 0.1247505, z: -0.000003576405}

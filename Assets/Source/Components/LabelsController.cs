@@ -18,6 +18,7 @@ public class LabelsController : MonoBehaviour
     private UnityAction floorChangeListener;
 
     private string dataPath;
+    private Dictionary<string, GameObject> labelsStorage;
 
     // для хранения точки касания экрана
     private Vector3 touchPoint;
@@ -25,6 +26,7 @@ public class LabelsController : MonoBehaviour
     void Start()
     {
         markersStore = new GameObject("Markers");
+        labelsStorage = new Dictionary<string, GameObject>();
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
         LoadLabels();
         ShowOnlyActiveMarkers();
@@ -39,6 +41,7 @@ public class LabelsController : MonoBehaviour
     {
         EventManager.StartListening(AppUtils.floorChanged, floorChangeListener);
     }
+
     private void OnDisable()
     {
         EventManager.StopListening(AppUtils.floorChanged, floorChangeListener);
@@ -81,27 +84,6 @@ public class LabelsController : MonoBehaviour
         }
     }
 
-    private void ClearLabelsButtonsList()
-    {
-        foreach (Transform obj in content.transform)
-        {
-            Button button = GetComponent<Button>();
-            if (button != null)
-            {
-                // удалить объект
-                // Destroy(button.gameObject);
-
-                // сделать неактивным
-                button.gameObject.SetActive(false);
-            }
-        }
-    }
-
-    public void ClearSearchInput(InputField inputField)
-    {
-        inputField.text = "";
-    }
-
     public void LoadLabels()
     {
         if (File.Exists(dataPath))
@@ -137,6 +119,12 @@ public class LabelsController : MonoBehaviour
         }
     }
 
+    public GameObject GetLabelObjectByName(string name)
+    {
+        GameObject labelObj = null;
+        labelsStorage.TryGetValue(name, out labelObj);
+        return labelObj;
+    }
     private void LoadedLabelsListHandler(string labelsList)
     {
         JSONObject labelsListJSON = new JSONObject(labelsList);
@@ -156,8 +144,10 @@ public class LabelsController : MonoBehaviour
                 LabelsList.self.update(name, item);
                 
                 GameObject newLabel = GameObject.Instantiate(markerPrefab);
-                newLabel.transform.position = AppUtils.stringToVector3(item.GetField(AppUtils.JSON_LOCATION).str);
+                newLabel.transform.position = AppUtils.stringToVector3(
+                    item.GetField(AppUtils.JSON_LOCATION).str) + (Vector3.up * 0.5f);
                 newLabel.transform.SetParent(markersStore.transform);
+                labelsStorage.Add(name, newLabel);
                 newLabel.GetComponent<Label>().SetName(name);
 
                 labelsButtonsStorage.AddLabelButton(name);

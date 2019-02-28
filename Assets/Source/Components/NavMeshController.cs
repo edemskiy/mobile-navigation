@@ -16,7 +16,6 @@ public class NavMeshController: MonoBehaviour
     public LevelsController levelsController;
     public GameObject defaultLevel;
     NavMeshAgent navMeshAgent;
-    private float prevActiveLevelPositionY;
 
     // материал линий из которых состоит путь
     public Material pathLineMaterial;
@@ -52,7 +51,6 @@ public class NavMeshController: MonoBehaviour
 
         path = new NavMeshPath();
         pathStore = new GameObject("Path");
-        prevActiveLevelPositionY = LevelButton.activeLevelPositionY;
         player.SetActive(false);
 
         string userPositionString = PlayerPrefs.GetString(AppUtils.JSON_LOCATION, "NaN");
@@ -72,7 +70,10 @@ public class NavMeshController: MonoBehaviour
             levelsController.SetActive(defaultLevel);
         }
         */
-        
+
+        player.GetComponent<Renderer>().enabled = false;
+        target.GetComponent<Renderer>().enabled = false;
+
     }
 
     private void Awake()
@@ -187,12 +188,17 @@ public class NavMeshController: MonoBehaviour
         target.SetActive((target.transform.position.y < LevelsController.activeLevelPosition.y) && (target.transform.position != Vector3.zero));
     }
 
+    public bool IsPathBuilt()
+    {
+        return path.corners.Length > 2;
+    }
+
     // поменять местами точки "А" и "Б"
     public void SwitchRoutePoints()
     {
         Vector3 newSource = path.corners[path.corners.Length - 1];
         Vector3 newDestination = path.corners[0];
-        
+
         SetSource(newSource);
         SetDestination(newDestination);
     }

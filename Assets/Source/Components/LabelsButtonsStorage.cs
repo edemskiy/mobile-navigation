@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LabelsButtonsStorage : MonoBehaviour
 {
@@ -29,5 +30,10 @@ public class LabelsButtonsStorage : MonoBehaviour
 
 
         OpenLabelInfoWindow(label);
+    }
+
+    public void ClearSearchInput(InputField inputField)
+    {
+        inputField.text = "";
     }
 }
