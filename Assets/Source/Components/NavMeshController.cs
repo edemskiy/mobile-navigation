@@ -98,6 +98,7 @@ public class NavMeshController: MonoBehaviour
     {
         navMeshAgent.enabled = false;
     }
+
     public void EnableNavAgent()
     {
         navMeshAgent.enabled = true;
@@ -175,6 +176,7 @@ public class NavMeshController: MonoBehaviour
         DrawPath();
     }
 
+    // показать участки пути только на активном этаже
     private void ShowOnlyActiveFloorPath()
     {
         foreach (Transform line in pathStore.transform)
@@ -185,6 +187,17 @@ public class NavMeshController: MonoBehaviour
         target.SetActive((target.transform.position.y < levelsController.getActiveLevelPosition().y) && (target.transform.position != Vector3.zero));
     }
 
+    // поменять местами точки "А" и "Б"
+    public void SwitchRoutePoints()
+    {
+        Vector3 newSource = path.corners[path.corners.Length - 1];
+        Vector3 newDestination = path.corners[0];
+        
+        SetSource(newSource);
+        SetDestination(newDestination);
+    }
+
+    // сбросить путь и очистить карту
     public void ResetPath()
     {
         foreach (Transform line in pathStore.transform)
@@ -198,8 +211,4 @@ public class NavMeshController: MonoBehaviour
         target.SetActive(false);
     }
 
-    private void Update()
-    {
-        
-    }
 }
