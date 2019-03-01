@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/PhoneVersion.unity
     guid: 54004d0d4c2a0b24e9cbd32481c3f40a
   - enabled: 1
-    path: Assets/Navigation.unity
+    path: Assets/Scenes/Navigation.unity
     guid: 0a8a14015b8177149bf1ea8664d6ac04
   m_configObjects: {}

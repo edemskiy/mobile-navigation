@@ -69,10 +69,10 @@ public class LabelInfoWindow : MonoBehaviour
             AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
             );
 
-        buttonTo.GetComponentInChildren<Text>().text = labelInfo.GetField(AppUtils.JSON_NAME).str;
+        buttonTo.GetComponentInChildren<Text>().text = activeLabelToName;
 
         labelsController.HighlightLabel(
-             labelInfo.GetField(AppUtils.JSON_NAME).str,
+            activeLabelToName,
              AppUtils.LightBlueColor
              );
 
