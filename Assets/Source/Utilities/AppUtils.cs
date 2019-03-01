@@ -8,7 +8,8 @@ using UnityEngine.EventSystems;
 
 public class AppUtils
 {
-    public const string labelsURL = "http://127.0.0.1:8000/api/codes/";
+    // public const string labelsURL = "http://127.0.0.1:8000/api/codes/";
+    public const string labelsURL = "http://88.201.132.192:8000/api/codes/";
     public const string labelsLocalFileName = "labels.txt";
 
     // Names
@@ -34,7 +35,7 @@ public class AppUtils
     public const string JSON_MEDIAS = "medias";
     public const string JSON_LOCATION = "location";
     public const string JSON_FLOOR = "floor";
-    public const string JSON_MESSAGE = "message";
+    public const string JSON_INFO = "info";
     public const string JSON_QR = "qrcode";
     public const string JSON_TYPE = "type";
 

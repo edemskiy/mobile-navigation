@@ -76,6 +76,7 @@ public class NavMeshController: MonoBehaviour
 
     }
 
+    // Функционал обработки событий. Начало.
     private void Awake()
     {
         floorChangeListener = new UnityAction(OnFloorChange);
@@ -85,6 +86,7 @@ public class NavMeshController: MonoBehaviour
     {
         EventManager.StartListening(AppUtils.floorChanged, floorChangeListener);
     }
+
     private void OnDisable()
     {
         EventManager.StopListening(AppUtils.floorChanged, floorChangeListener);
@@ -104,6 +106,7 @@ public class NavMeshController: MonoBehaviour
     {
         navMeshAgent.enabled = true;
     }
+    // Функционал обработки событий. Конец.
 
     // визуализация одного отрезка пути
     void DrawLine(Vector3 start, Vector3 end, Color color)
@@ -127,7 +130,6 @@ public class NavMeshController: MonoBehaviour
     // расчет и визуализация пути
     public void DrawPath()
     {
-        //Debug.Log(LevelSwithcer.activeLevelPositionY);
         // удаляем визуализацию предыдущего пути
         foreach (Transform line in pathStore.transform)
         {
@@ -135,14 +137,22 @@ public class NavMeshController: MonoBehaviour
         }
         path.ClearCorners();
 
-        player.SetActive(true);
+        // активируем игрока
+        player.SetActive(true); // можно убрать, так как он невидимый?
+        
         // если маршрут построен, то визуализируем его, строя линии по точкам        
         if (navMeshAgent.CalculatePath(target.transform.position, path))
         {
             if ((path.corners[path.corners.Length - 1] - target.transform.position).magnitude > 0.1f)
             {
                 Debug.Log("Невозможно построить маршрут");
-                player.SetActive((player.transform.position.y < LevelsController.activeLevelPosition.y) && (player.transform.position != Vector3.zero));
+                
+                //* Зачем?? 
+                bool cond = (player.transform.position.y < LevelsController.activeLevelPosition.y)
+                    && (player.transform.position != Vector3.zero);
+                player.SetActive(cond);
+                //*/
+
                 return;
             }
             
@@ -151,16 +161,13 @@ public class NavMeshController: MonoBehaviour
                 DrawLine(path.corners[i], path.corners[i - 1], Color.green);
             }
         }
+
+        // отображаем только нужную часть пути
         ShowOnlyActiveFloorPath();
     }
 
-    public Vector3 getPosition()
-	{
-		return navMeshAgent.transform.position;
-	}
-
     // установка исходной точки пути
-	public void SetSource(Vector3 position)
+    public void SetSource(Vector3 position)
 	{
         player.SetActive(true);
         DisableNavAgent();
@@ -188,6 +195,7 @@ public class NavMeshController: MonoBehaviour
         target.SetActive((target.transform.position.y < LevelsController.activeLevelPosition.y) && (target.transform.position != Vector3.zero));
     }
 
+    // построен ли путь? (объект пути содержит больше двух точек)
     public bool IsPathBuilt()
     {
         return path.corners.Length > 2;
