@@ -26,23 +26,18 @@ public class PlayerTargetSwapScript : MonoBehaviour
     public void Clear()
     {
         navMeshController.ResetPath();
-        GameObject labelFrom = labelsController
-            .GetLabelObjectByName(ButtonFrom.GetComponentInChildren<Text>().text);
-        GameObject labelTo = labelsController
-            .GetLabelObjectByName(ButtonTo.GetComponentInChildren<Text>().text);
 
-        if(labelFrom != null)
-        {
-            labelFrom.GetComponent<TextMeshPro>().color = Color.white;
-            
-        }
-        if (labelTo != null)
-        {
-            labelTo.GetComponent<TextMeshPro>().color = Color.white;
-        }
+        labelsController.HighlightLabel(
+            ButtonFrom.GetComponentInChildren<Text>().text,
+            AppUtils.DefaultLabelColor
+            );
+
+        labelsController.HighlightLabel(
+            ButtonTo.GetComponentInChildren<Text>().text,
+            AppUtils.DefaultLabelColor
+            );
 
         ButtonFrom.GetComponentInChildren<Text>().text = AppUtils.ButtonFrom_DefaultName;
-        ButtonTo.GetComponentInChildren<Text>().text = AppUtils.ButtonTo_DefaultName;
-        
+        ButtonTo.GetComponentInChildren<Text>().text = AppUtils.ButtonTo_DefaultName;        
     }
 }

@@ -6,6 +6,8 @@ using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
+
 public class LabelsController : MonoBehaviour
 {
     //public PointsInputsController pointsInputsController;
@@ -119,12 +121,17 @@ public class LabelsController : MonoBehaviour
         }
     }
 
-    public GameObject GetLabelObjectByName(string name)
+    public void HighlightLabel(string labelName, Color color)
     {
         GameObject labelObj = null;
-        labelsStorage.TryGetValue(name, out labelObj);
-        return labelObj;
+        labelsStorage.TryGetValue(labelName, out labelObj);
+        
+        if(labelObj != null)
+        {
+            labelObj.GetComponent<TextMeshPro>().color = color;
+        }
     }
+
     private void LoadedLabelsListHandler(string labelsList)
     {
         JSONObject labelsListJSON = new JSONObject(labelsList);

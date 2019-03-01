@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
 
 public class LabelInfoWindow : MonoBehaviour
 {
@@ -12,6 +12,14 @@ public class LabelInfoWindow : MonoBehaviour
     public Button buttonFrom, buttonTo;
     public LabelsController labelsController;
     private JSONObject labelInfo;
+
+    private string activeLabelFromName, activeLabelToName;
+
+    private void Start()
+    {
+        activeLabelFromName = "";
+        activeLabelToName = "";
+    }
 
     public void Init(JSONObject label)
     {
@@ -27,35 +35,47 @@ public class LabelInfoWindow : MonoBehaviour
 
     public void OnRouteFromClick()
     {
+        labelsController.HighlightLabel(
+            activeLabelFromName,
+            AppUtils.DefaultLabelColor
+            );
+
+        activeLabelFromName = labelInfo.GetField(AppUtils.JSON_NAME).str;
+
         navMeshController.SetSource(
             AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
             );
-        buttonFrom.GetComponentInChildren<Text>().text = labelInfo.GetField(AppUtils.JSON_NAME).str;
 
-        GameObject activeLabelObj = labelsController
-            .GetLabelObjectByName(labelInfo.GetField(AppUtils.JSON_NAME).str);
+        buttonFrom.GetComponentInChildren<Text>().text = activeLabelFromName;
 
-        if (activeLabelObj != null)
-        {
-            activeLabelObj.GetComponent<TextMeshPro>().color = AppUtils.LightRedColor;
-        }
+        labelsController.HighlightLabel(
+            activeLabelFromName,
+            AppUtils.LightRedColor
+            );
+
         this.gameObject.SetActive(false);
     }
 
     public void OnRouteToClick()
     {
+        labelsController.HighlightLabel(
+            activeLabelToName,
+            AppUtils.DefaultLabelColor
+            );
+
+        activeLabelToName = labelInfo.GetField(AppUtils.JSON_NAME).str;
+
         navMeshController.SetDestination(
             AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
             );
+
         buttonTo.GetComponentInChildren<Text>().text = labelInfo.GetField(AppUtils.JSON_NAME).str;
 
-        GameObject activeLabelObj = labelsController
-            .GetLabelObjectByName(labelInfo.GetField(AppUtils.JSON_NAME).str);
+        labelsController.HighlightLabel(
+             labelInfo.GetField(AppUtils.JSON_NAME).str,
+             AppUtils.LightBlueColor
+             );
 
-        if (activeLabelObj != null)
-        {
-            activeLabelObj.GetComponent<TextMeshPro>().color = AppUtils.LightBlueColor;
-        }
         this.gameObject.SetActive(false);
     }
 }

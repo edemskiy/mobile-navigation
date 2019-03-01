@@ -20,6 +20,7 @@ public class AppUtils
     public static Color LightYellowColor = new Color(1f, 0.92f, 0.16f, 1.0f);
     public static Color LightRedColor = new Color(1f, 0.41f, 0.36f, 1.0f);
     public static Color LightBlueColor = new Color(0.28f, 0.65f, 1f, 1.0f);
+    public static Color DefaultLabelColor = Color.white;
 
     // Events
     public const string floorChanged = "floorChanged";
@@ -28,11 +29,8 @@ public class AppUtils
     public const string JSON_ID = "id";
     public const string JSON_NAME = "name";
     public const string JSON_KEY = "key";
-    public const string JSON_SLIDE = "slide";
     public const string JSON_URL = "url";
     public const string JSON_DATA = "data";
-    public const string JSON_MONITOR = "monitor";
-    public const string JSON_MEDIAS = "medias";
     public const string JSON_LOCATION = "location";
     public const string JSON_FLOOR = "floor";
     public const string JSON_INFO = "info";
