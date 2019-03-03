@@ -3,10 +3,15 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
+public class StringEvent : UnityEvent<string>
+{
+
+}
+
 public class EventManager : MonoBehaviour
 {
 
-    private Dictionary<string, UnityEvent> eventDictionary;
+    private Dictionary<string, StringEvent> eventDictionary;
 
     private static EventManager eventManager;
 
@@ -36,41 +41,41 @@ public class EventManager : MonoBehaviour
     {
         if (eventDictionary == null)
         {
-            eventDictionary = new Dictionary<string, UnityEvent>();
+            eventDictionary = new Dictionary<string, StringEvent>();
         }
     }
 
-    public static void StartListening(string eventName, UnityAction listener)
+    public static void StartListening(string eventName, UnityAction<string> listener)
     {
-        UnityEvent thisEvent = null;
+        StringEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.AddListener(listener);
         }
         else
         {
-            thisEvent = new UnityEvent();
+            thisEvent = new StringEvent();
             thisEvent.AddListener(listener);
             instance.eventDictionary.Add(eventName, thisEvent);
         }
     }
 
-    public static void StopListening(string eventName, UnityAction listener)
+    public static void StopListening(string eventName, UnityAction<string> listener)
     {
         if (eventManager == null) return;
-        UnityEvent thisEvent = null;
+        StringEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.RemoveListener(listener);
         }
     }
 
-    public static void TriggerEvent(string eventName)
+    public static void TriggerEvent(string eventName, string param="")
     {
-        UnityEvent thisEvent = null;
+        StringEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent.Invoke();
+            thisEvent.Invoke(param);
         }
     }
 }

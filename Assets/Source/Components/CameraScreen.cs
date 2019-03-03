@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using ZXing;
 
 public class CameraScreen : MonoBehaviour {
-    public Button showMapButton;
+    // public Button showMapButton;
 
     bool camAvailable, markerFound;
     private string infoText = null;
@@ -27,7 +27,7 @@ public class CameraScreen : MonoBehaviour {
     private DetectorParameters detectorParams;
     private List<Mat> rejectedCorners;
 
-    private JSONObject qrInfo;
+    private string qrInfo;
 
     int frames;
     int W, H;
@@ -47,9 +47,6 @@ public class CameraScreen : MonoBehaviour {
 
     BarcodeReader qrReader;
 
-    private string labelLocationName, labelLocationVector;
-    private int labelFloorNumber;
-
     public RawImage background;
     public AspectRatioFitter fit;
     public Text info;
@@ -68,7 +65,7 @@ public class CameraScreen : MonoBehaviour {
 
         for (int i = 0; i < devices.Length; i++)
         {
-            if (!devices[i].isFrontFacing)
+            if (devices[i].isFrontFacing)
             {
                 backCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
                 cameraId = i;
@@ -112,8 +109,8 @@ public class CameraScreen : MonoBehaviour {
             return;
         frames++;
 
-        showMapButton.gameObject.SetActive(markerFound);
-        info.text = infoText;
+        // showMapButton.gameObject.SetActive(markerFound);
+        // info.text = infoText;
 
         Utils.webCamTextureToMat(backCam, rgbaMat, colors);
 
@@ -209,26 +206,9 @@ public class CameraScreen : MonoBehaviour {
                 Result data = qrReader.Decode(targetColorARR, blockWidth, blockWidth);
                 if (data != null)
                 {
-                    qrInfo = new JSONObject(data.Text);
-                    JSONObject info = new JSONObject(data.Text);
-                    if(info.HasField(AppUtils.JSON_NAME) && info.HasField(AppUtils.JSON_LOCATION) && info.HasField(AppUtils.JSON_FLOOR))
-                    {
-                        labelLocationName = info.GetField(AppUtils.JSON_NAME).str;
-                        infoText = labelLocationName;
-                        labelLocationVector = info.GetField(AppUtils.JSON_LOCATION).str;
-                        int.TryParse(info.GetField(AppUtils.JSON_FLOOR).str, out labelFloorNumber);
-                        markerFound = true;
-                    }
-                    else
-                    {
-                        infoText = "Неверный формат маркера";
-                        markerFound = false;
-                    }
-                    
-                }
-                else
-                {
-                    //infoText = "no markers found";
+                    // qrInfo = new JSONObject(data.Text).str;
+                    EventManager.TriggerEvent(AppUtils.qrDetected, data.Text);
+                    Debug.Log("qr found");
                 }
             }
             catch (System.Exception e)
@@ -294,14 +274,9 @@ public class CameraScreen : MonoBehaviour {
         }
     }
 
-    public void ShowMapButtonOnClick()
+    public void TurnOffCam()
     {
         backCam.Stop();
         camAvailable = false;
-
-        PlayerPrefs.SetString(AppUtils.JSON_LOCATION, labelLocationVector);
-        PlayerPrefs.SetString(AppUtils.JSON_NAME, labelLocationName);
-        PlayerPrefs.SetInt(AppUtils.JSON_FLOOR, labelFloorNumber);
-        SceneManager.LoadScene("PhoneVersion");
     }
 }

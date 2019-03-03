@@ -17,7 +17,7 @@ public class LabelsController : MonoBehaviour
     public LabelsButtonsStorage labelsButtonsStorage;
     private GameObject markersStore;
 
-    private UnityAction floorChangeListener;
+    private UnityAction<string> floorChangeListener;
 
     private string dataPath;
     private Dictionary<string, GameObject> labelsStorage;
@@ -36,7 +36,7 @@ public class LabelsController : MonoBehaviour
 
     private void Awake()
     {
-        floorChangeListener = new UnityAction(OnFloorChange);
+        floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
 
     private void OnEnable()
@@ -49,7 +49,7 @@ public class LabelsController : MonoBehaviour
         EventManager.StopListening(AppUtils.floorChanged, floorChangeListener);
     }
 
-    private void OnFloorChange()
+    private void OnFloorChange(string s)
     {
         ShowOnlyActiveMarkers();
     }

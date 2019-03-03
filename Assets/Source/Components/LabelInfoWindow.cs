@@ -19,6 +19,13 @@ public class LabelInfoWindow : MonoBehaviour
     {
         activeLabelFromName = "";
         activeLabelToName = "";
+
+        string qrJSONString = PlayerPrefs.GetString(AppUtils.JSON_QR, "NaN");
+        if(qrJSONString != "NaN")
+        {
+            labelInfo = new JSONObject(qrJSONString);
+            OnRouteFromClick();
+        }
     }
 
     public void Init(JSONObject label)

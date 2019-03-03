@@ -28,7 +28,7 @@ public class NavMeshController: MonoBehaviour
     // объект пути в который будут "складываться" его части (отрезки пути)
     private GameObject pathStore;
 
-    private UnityAction floorChangeListener;
+    private UnityAction<string> floorChangeListener;
 
     private void Start() 
 	{
@@ -79,7 +79,7 @@ public class NavMeshController: MonoBehaviour
     // Функционал обработки событий. Начало.
     private void Awake()
     {
-        floorChangeListener = new UnityAction(OnFloorChange);
+        floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
 
     private void OnEnable()
@@ -92,7 +92,7 @@ public class NavMeshController: MonoBehaviour
         EventManager.StopListening(AppUtils.floorChanged, floorChangeListener);
     }
 
-    private void OnFloorChange()
+    private void OnFloorChange(string s)
     {
         ShowOnlyActiveFloorPath();
     }

@@ -15,6 +15,7 @@ public class AppUtils
     // Names
     public const string ButtonFrom_DefaultName = "ОТКУДА";
     public const string ButtonTo_DefaultName = "КУДА";
+    public const string NavigationSceneName = "Navigation";
 
     // Colors
     public static Color LightYellowColor = new Color(1f, 0.92f, 0.16f, 1.0f);
