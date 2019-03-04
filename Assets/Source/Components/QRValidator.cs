@@ -7,17 +7,19 @@ using UnityEngine.SceneManagement;
 
 public class QRValidator : MonoBehaviour
 {
-    public Text infoText;
-    public Button showMapButton;
+    public Text nameText;
+    public Text aboutText;
+    public GameObject qrLabelInfo;
     private UnityAction<string> qrDetectedListener;
-    private string infoString;
+    private string nameString, aboutString;
     private string labelJSON;
-    private bool buttonActive;
+    private bool qrFound;
 
     void Start()
     {
-        infoString = "";
-        buttonActive = false;
+        nameString = "";
+        aboutString = "";
+        qrFound = false;
     }
 
     private void Awake()
@@ -43,25 +45,41 @@ public class QRValidator : MonoBehaviour
             info.HasField(AppUtils.JSON_LOCATION) &&
             info.HasField(AppUtils.JSON_FLOOR))
         {
+            Debug.Log(s);
             labelJSON = s;
-            infoString = info.GetField(AppUtils.JSON_NAME).str;
-            buttonActive = true;
+            nameString = info.GetField(AppUtils.JSON_NAME).str;
+            aboutString = info.GetField(AppUtils.JSON_INFO).str;
+            qrFound = true;
         }
         else
         {
-            infoString = "Неверный формат маркера";
+            // nameString = "Неверный формат маркера";
         }
     }
 
     public void ShowMapButtonOnClick()
     {
-        PlayerPrefs.SetString(AppUtils.JSON_QR, labelJSON);
+        if (qrFound)
+        {
+            PlayerPrefs.SetString(AppUtils.JSON_QR, labelJSON);
+        }
+        else
+        {
+            PlayerPrefs.DeleteAll();
+        }
+
         SceneManager.LoadScene(AppUtils.NavigationSceneName);
     }
 
+    public void CloseButtonOnClick()
+    {
+        qrFound = false;
+        qrLabelInfo.gameObject.SetActive(false);
+    }
     void Update()
     {
-        infoText.text = infoString;
-        showMapButton.gameObject.SetActive(buttonActive);
+        nameText.text = nameString;
+        aboutText.text = aboutString;
+        qrLabelInfo.gameObject.SetActive(qrFound);
     }
 }

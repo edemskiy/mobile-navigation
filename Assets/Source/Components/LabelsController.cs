@@ -126,7 +126,6 @@ public class LabelsController : MonoBehaviour
     {
         GameObject labelObj = null;
         labelsStorage.TryGetValue(labelName, out labelObj);
-        Debug.Log(labelObj);
         if(labelObj != null)
         {
             labelObj.GetComponent<TextMeshPro>().color = color;
