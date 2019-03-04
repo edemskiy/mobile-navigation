@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class LabelsButtonsStorage : MonoBehaviour
 {
     public GameObject buttonPrefab;
-    public LabelInfoWindow labelInfoWindow;
+    public PathStartController pathStartController;
 
     public void AddLabelButton(string name)
     {
-        GameObject newButton = GameObject.Instantiate(buttonPrefab);
+        GameObject newButton = Instantiate(buttonPrefab);
         newButton.name = name;
         newButton.GetComponent<LabelButton>().SetText(name);
         newButton.transform.SetParent(this.transform);
@@ -18,8 +18,7 @@ public class LabelsButtonsStorage : MonoBehaviour
     }
     public void OpenLabelInfoWindow(JSONObject label)
     {
-        labelInfoWindow.gameObject.SetActive(true);
-        labelInfoWindow.Init(label);
+        pathStartController.ShowInfoWindow(label);
     }
     
     public void OnLabelButtonClick(JSONObject label)

@@ -27,15 +27,16 @@ public class LabelsController : MonoBehaviour
 
     void Start()
     {
-        markersStore = new GameObject("Markers");
-        labelsStorage = new Dictionary<string, GameObject>();
-        dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
-        LoadLabels();
         ShowOnlyActiveMarkers();
     }
 
     private void Awake()
     {
+        markersStore = new GameObject("Markers");
+        labelsStorage = new Dictionary<string, GameObject>();
+        dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
+        LoadLabels();
+
         floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
 
@@ -125,7 +126,7 @@ public class LabelsController : MonoBehaviour
     {
         GameObject labelObj = null;
         labelsStorage.TryGetValue(labelName, out labelObj);
-        
+        Debug.Log(labelObj);
         if(labelObj != null)
         {
             labelObj.GetComponent<TextMeshPro>().color = color;

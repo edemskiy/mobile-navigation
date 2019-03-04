@@ -33,11 +33,7 @@ public class NavMeshController: MonoBehaviour
     private void Start() 
 	{
         // проверяем есть ли компонент NavMeshAgent
-        navMeshAgent = player.GetComponent<NavMeshAgent>();
-        if (navMeshAgent == null)
-        {
-            Debug.Log("NavMesh component is not attached");
-        }
+        
         
         // строим NavMesh для всех поверхностей (долго!)
         /*
@@ -49,27 +45,9 @@ public class NavMeshController: MonoBehaviour
 
         levelsController.SetActive(defaultLevel);
 
-        path = new NavMeshPath();
-        pathStore = new GameObject("Path");
+        
         player.SetActive(false);
 
-        string userPositionString = PlayerPrefs.GetString(AppUtils.JSON_LOCATION, "NaN");
-        if(userPositionString != "NaN")
-        {
-            SetSource(AppUtils.stringToVector3(userPositionString));
-        }
-
-        int userPositionLevel = PlayerPrefs.GetInt(AppUtils.JSON_FLOOR, 0);
-        /*
-        if (userPositionLevel != 0)
-        {
-            levelsController.SetActive(levelsController.levels[userPositionLevel-1]);
-        }
-        else
-        {
-            levelsController.SetActive(defaultLevel);
-        }
-        */
 
         player.GetComponent<Renderer>().enabled = false;
         target.GetComponent<Renderer>().enabled = false;
@@ -79,6 +57,14 @@ public class NavMeshController: MonoBehaviour
     // Функционал обработки событий. Начало.
     private void Awake()
     {
+        navMeshAgent = player.GetComponent<NavMeshAgent>();
+        if (navMeshAgent == null)
+        {
+            Debug.Log("NavMesh component is not attached");
+        }
+        path = new NavMeshPath();
+        pathStore = new GameObject("Path");
+
         floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
 
