@@ -12,7 +12,7 @@ public class AboveCamera : MonoBehaviour
     private void Start()
     {
         cam = GetComponent<Camera>();
-        cam.orthographicSize = 25;
+        cam.orthographicSize = 35;
         cam.gameObject.SetActive(true);
         cam.orthographic = true;
         active = true;
@@ -50,8 +50,8 @@ public class AboveCamera : MonoBehaviour
             if (Application.platform == RuntimePlatform.Android)
             {
                 Touch touch = Input.GetTouch(0);
-                newPosition.x -= touch.deltaPosition.x / 50f;
-                newPosition.z -= touch.deltaPosition.y / 50f;
+                newPosition.x -= touch.deltaPosition.x / 30f;
+                newPosition.z -= touch.deltaPosition.y / 30f;
 
                 if (Input.touchCount == 2)
                 {
@@ -74,7 +74,7 @@ public class AboveCamera : MonoBehaviour
                     cam.orthographicSize += deltaMagnitudeDiff * zoomSpeed;
 
                     //Make sure the orthographic size never drops below zero.
-                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, 10f, 70f);
+                    cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, 15f, 80f);
                 }
             }
             else
@@ -102,11 +102,11 @@ public class AboveCamera : MonoBehaviour
 
     public void ZoomIn(float zoom_coeff)
     {
-        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - zoom_coeff, 10f, 40f);
+        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - zoom_coeff, 15f, 80f);
     }
 
     public void ZoomOut(float zoom_coeff)
     {
-        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoom_coeff, 10f, 40f);
+        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoom_coeff, 15f, 80f);
     }
 }

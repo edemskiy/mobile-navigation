@@ -43,7 +43,7 @@ public class NavMeshController: MonoBehaviour
         }
         */
 
-        levelsController.SetActive(defaultLevel);
+        //levelsController.SetActive(defaultLevel);
 
         
         player.SetActive(false);

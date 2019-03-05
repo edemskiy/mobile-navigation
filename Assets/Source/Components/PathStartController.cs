@@ -6,22 +6,40 @@ using UnityEngine.UI;
 public class PathStartController : MonoBehaviour
 {
     public LabelInfoWindow labelInfoWindow;
+    public LevelsController levelsController;
     private string activeLabelFromName, activeLabelToName;
     public LabelsController labelsController;
     public NavMeshController navMeshController;
     private JSONObject labelInfo;
-    // Start is called before the first frame update
+
     void Start()
     {
         activeLabelFromName = "";
         activeLabelToName = "";
 
         string qrJSONString = PlayerPrefs.GetString(AppUtils.JSON_QR, "NaN");
+        Debug.Log(qrJSONString == "NaN");
         if (qrJSONString != "NaN")
         {
             Debug.Log(qrJSONString);
             labelInfo = new JSONObject(qrJSONString);
+            
+            /*
+             * удалить, когда в метках будет инфа об этаже!
+             */
+            int levelNum = 0;
+            int.TryParse(labelInfo.GetField(AppUtils.JSON_FLOOR).str, out levelNum);
+            levelsController.SetActive(levelNum);
+            Vector3 location = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
+            Camera.main.transform.position = new Vector3(location.x, Camera.main.transform.position.y, location.z);
+            /* ---------------------------- */
+
+            SetUpCamera();
             OnRouteFromClick();
+        }
+        else
+        {
+            levelsController.SetActive(4);
         }
     }
 
@@ -45,6 +63,8 @@ public class PathStartController : MonoBehaviour
             AppUtils.LightRedColor
             );
 
+        SetUpCamera();
+
         labelInfoWindow.gameObject.SetActive(false);
     }
 
@@ -67,11 +87,22 @@ public class PathStartController : MonoBehaviour
             activeLabelToName,
              AppUtils.LightBlueColor
              );
-
+        SetUpCamera();
         labelInfoWindow.gameObject.SetActive(false);
     }
 
-    public void ShowInfoWindow(JSONObject label)
+    private void SetUpCamera()
+    {
+        /*
+         * Раскомментировать, когда в метках будет инфа об этаже!
+        int levelNum = 0;
+        int.TryParse(labelInfo.GetField(AppUtils.JSON_FLOOR).str, out levelNum);
+        levelsController.SetActive(levelNum);
+        Vector3 location = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
+        Camera.main.transform.position = new Vector3(location.x, Camera.main.transform.position.y, location.z);
+        */
+        }
+        public void ShowInfoWindow(JSONObject label)
     {
         labelInfo = label;
         labelInfoWindow.audienceName.text = labelInfo.GetField(AppUtils.JSON_NAME).str;
