@@ -18,7 +18,6 @@ public class PathStartController : MonoBehaviour
         activeLabelToName = "";
 
         string qrJSONString = PlayerPrefs.GetString(AppUtils.JSON_QR, "NaN");
-        Debug.Log(qrJSONString == "NaN");
         if (qrJSONString != "NaN")
         {
             Debug.Log(qrJSONString);

@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelsController : MonoBehaviour {
 
     [SerializeField]
     GameObject[] levels;
+    GameObject[] levelButtons;
     public GameObject activeLevel;
     public static Vector3 activeLevelPosition;
     // Use this for initialization
     void Start () {
-        //SetActive(levels[0]);
+
 	}
 
     public void SetActive(GameObject newActiveLevel)
@@ -26,7 +28,10 @@ public class LevelsController : MonoBehaviour {
 
     public void SetActive(int levelNum)
     {
-        for(int i=0; i < levels.Length; i++)
+        // установка цвета кнопки
+        // levelButtons[levelNum - 1].GetComponentInChildren<Text>().color = AppUtils.LightYellowColor;
+
+        for (int i=0; i < levels.Length; i++)
         {
             levels[i].SetActive(i == levelNum-1);
         }
