@@ -14,6 +14,8 @@ public class PathStartController : MonoBehaviour
 
     void Start()
     {
+        TouchScreenKeyboard.hideInput = true;
+
         activeLabelFromName = "";
         activeLabelToName = "";
 
@@ -92,16 +94,17 @@ public class PathStartController : MonoBehaviour
 
     private void SetUpCamera()
     {
+        // Раскомментировать, когда в метках будет инфа об этаже!
         /*
-         * Раскомментировать, когда в метках будет инфа об этаже!
         int levelNum = 0;
         int.TryParse(labelInfo.GetField(AppUtils.JSON_FLOOR).str, out levelNum);
         levelsController.SetActive(levelNum);
         Vector3 location = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
         Camera.main.transform.position = new Vector3(location.x, Camera.main.transform.position.y, location.z);
         */
-        }
-        public void ShowInfoWindow(JSONObject label)
+
+    }
+    public void ShowInfoWindow(JSONObject label)
     {
         labelInfo = label;
         labelInfoWindow.audienceName.text = labelInfo.GetField(AppUtils.JSON_NAME).str;

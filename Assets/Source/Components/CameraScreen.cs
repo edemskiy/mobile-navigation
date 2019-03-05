@@ -109,14 +109,12 @@ public class CameraScreen : MonoBehaviour {
             return;
         frames++;
 
-        // showMapButton.gameObject.SetActive(markerFound);
-        // info.text = infoText;
-
+  
         Utils.webCamTextureToMat(backCam, rgbaMat, colors);
-
+        
         if ((frames+10) % 20 == 0)
         {
-            DetectAruco();
+            //DetectAruco();
         }
 
         Utils.fastMatToTexture2D(rgbaMat, texture);
@@ -162,6 +160,8 @@ public class CameraScreen : MonoBehaviour {
 
     private void OnCameraItit()
     {
+        Debug.Log("screenW: " + Screen.width + ", screenH" + Screen.height);
+        Debug.Log("width: " + backCam.width + ", height" + backCam.height);
         float ratio = (float)backCam.width / (float)backCam.height;
         fit.aspectRatio = ratio;
 
@@ -207,6 +207,11 @@ public class CameraScreen : MonoBehaviour {
                 if (data != null)
                 {
                     // qrInfo = new JSONObject(data.Text).str;
+#if UNITY_ANDROID || UNITY_IOS
+
+                    Handheld.Vibrate();
+
+#endif
                     EventManager.TriggerEvent(AppUtils.qrDetected, data.Text);
                     Debug.Log("qr found");
                 }

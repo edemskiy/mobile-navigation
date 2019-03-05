@@ -125,11 +125,12 @@ public class NavMeshController: MonoBehaviour
 
         // активируем игрока
         player.SetActive(true); // можно убрать, так как он невидимый?
-        
+
         // если маршрут построен, то визуализируем его, строя линии по точкам        
         if (navMeshAgent.CalculatePath(target.transform.position, path))
         {
-            if ((path.corners[path.corners.Length - 1] - target.transform.position).magnitude > 0.1f)
+            // if ((path.corners[path.corners.Length - 1] - target.transform.position).magnitude > 0.5f)
+            if (Math.Abs(path.corners[path.corners.Length - 1].y - target.transform.position.y) > 2)
             {
                 Debug.Log("Невозможно построить маршрут");
                 

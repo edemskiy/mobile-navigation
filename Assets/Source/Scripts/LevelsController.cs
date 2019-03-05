@@ -23,7 +23,7 @@ public class LevelsController : MonoBehaviour {
         }
         activeLevel = newActiveLevel;
         activeLevelPosition = activeLevel.transform.position;
-        // EventManager.TriggerEvent(AppUtils.floorChanged);
+        EventManager.TriggerEvent(AppUtils.floorChanged);
     }
 
     public void SetActive(int levelNum)
