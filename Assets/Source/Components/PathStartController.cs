@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PathStartController : MonoBehaviour
 {
@@ -104,6 +105,7 @@ public class PathStartController : MonoBehaviour
         */
 
     }
+
     public void ShowInfoWindow(JSONObject label)
     {
         labelInfo = label;
@@ -115,6 +117,11 @@ public class PathStartController : MonoBehaviour
         // audienceInfo.text = label.GetField(AppUtils.JSON_INFO).str;
 
         labelInfoWindow.gameObject.SetActive(true);
+    }
+    
+    public void ShowScaner()
+    {
+        SceneManager.LoadScene(AppUtils.ScanerSceneName);
     }
     // Update is called once per frame
     void Update()
