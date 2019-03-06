@@ -145,7 +145,7 @@ public class NavMeshController: MonoBehaviour
             
             for (int i = 1; i < path.corners.Length; i++)
             {
-                DrawLine(path.corners[i], path.corners[i - 1], Color.green);
+                DrawLine(path.corners[i], path.corners[i - 1], AppUtils.LightYellowColor);
             }
         }
 

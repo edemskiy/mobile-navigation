@@ -5,12 +5,13 @@ using UnityEngine.UI;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ArucoModule;
 using OpenCVForUnity.UnityUtils;
-using UnityEngine.SceneManagement;
 
 using ZXing;
 
 public class CameraScreen : MonoBehaviour {
-    // public Button showMapButton;
+
+    public bool arucoScaner = false;
+    public bool qrScaner = true;
 
     bool camAvailable, markerFound;
     private string infoText = null;
@@ -52,6 +53,7 @@ public class CameraScreen : MonoBehaviour {
     public Text info;
     
     void Start () {
+        Screen.orientation = ScreenOrientation.Portrait;
         frames = 0;
         defaultBackground = background.texture;
         devices = WebCamTexture.devices;
@@ -77,13 +79,13 @@ public class CameraScreen : MonoBehaviour {
             info.text = "Задняя камера не найдена";
             return;
         }
-
         backCam.Play();
+        
         texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
         background.texture = texture;
-
+         
         camAvailable = true;
-
+        
         dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
         rgbaMat = new Mat(backCam.height, backCam.width, CvType.CV_8UC3);
         colors = new Color32[backCam.width * backCam.height];
@@ -109,31 +111,19 @@ public class CameraScreen : MonoBehaviour {
             return;
         frames++;
 
-  
         Utils.webCamTextureToMat(backCam, rgbaMat, colors);
-        
-        if ((frames+10) % 20 == 0)
+
+        if (((frames+10) % 20 == 0) && arucoScaner)
         {
-            //DetectAruco();
+            DetectAruco();
         }
 
         Utils.fastMatToTexture2D(rgbaMat, texture);
 
-        
-        if (frames % 20 == 0)
+        if ((frames % 20 == 0) && qrScaner)
         {
             DetectQR();
         }
-
-        /*
-        if (!arucoFound && !qrFound)
-        {
-            info.text = "No markers detected";
-        }
-        */
-
-        if (frames > 999999)
-            frames = 0;
     }
 
     private Mat CreateCameraMatrix(float width, float height)
@@ -160,9 +150,19 @@ public class CameraScreen : MonoBehaviour {
 
     private void OnCameraItit()
     {
-        Debug.Log("screenW: " + Screen.width + ", screenH" + Screen.height);
-        Debug.Log("width: " + backCam.width + ", height" + backCam.height);
         float ratio = (float)backCam.width / (float)backCam.height;
+
+        /*
+        if (Screen.height >= Screen.width)
+        {            
+            ratio = (float)Screen.height / (float)Screen.width;
+        }
+        else
+        {
+            ratio = (float)Screen.width / (float)Screen.height;
+        }
+        */
+
         fit.aspectRatio = ratio;
 
         float scaleY = backCam.videoVerticallyMirrored ? -1f : 1f;
@@ -206,19 +206,17 @@ public class CameraScreen : MonoBehaviour {
                 Result data = qrReader.Decode(targetColorARR, blockWidth, blockWidth);
                 if (data != null)
                 {
-                    // qrInfo = new JSONObject(data.Text).str;
-#if UNITY_ANDROID || UNITY_IOS
-
+                    #if UNITY_ANDROID || UNITY_IOS
                     Handheld.Vibrate();
+                    #endif
 
-#endif
                     EventManager.TriggerEvent(AppUtils.qrDetected, data.Text);
                     Debug.Log("qr found");
                 }
             }
             catch (System.Exception e)
             {
-                //Debug.LogError("Decode Error: " + e.Data.ToString());
+                Debug.LogError("Decode Error: " + e.Data.ToString());
             }
         });
     }

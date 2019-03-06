@@ -113,9 +113,14 @@ public class PathStartController : MonoBehaviour
         /* 
          * В информации о помещении пока стоит заглушка
          * так как сейчас нет информации об аудиториях
+        
+        string info = label.GetField(AppUtils.JSON_INFO).str;
+        Debug.Log(info);
+        if(info != "")
+        {
+            labelInfoWindow.audienceInfo.text = label.GetField(AppUtils.JSON_INFO).str;
+        }        
         */
-        // audienceInfo.text = label.GetField(AppUtils.JSON_INFO).str;
-
         labelInfoWindow.gameObject.SetActive(true);
     }
     

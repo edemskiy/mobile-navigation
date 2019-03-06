@@ -7,7 +7,10 @@ public class LevelsController : MonoBehaviour {
 
     [SerializeField]
     GameObject[] levels;
+
+    [SerializeField]
     GameObject[] levelButtons;
+
     public GameObject activeLevel;
     public static Vector3 activeLevelPosition;
     // Use this for initialization
@@ -29,12 +32,15 @@ public class LevelsController : MonoBehaviour {
     public void SetActive(int levelNum)
     {
         // установка цвета кнопки
-        // levelButtons[levelNum - 1].GetComponentInChildren<Text>().color = AppUtils.LightYellowColor;
+
+        
 
         for (int i=0; i < levels.Length; i++)
         {
+            levelButtons[i].GetComponentInChildren<Text>().color = AppUtils.DefaultLabelColor;
             levels[i].SetActive(i == levelNum-1);
         }
+        levelButtons[levelNum - 1].GetComponentInChildren<Text>().color = AppUtils.LightYellowColor;
         activeLevel = levels[levelNum-1];
         activeLevelPosition = activeLevel.transform.position;
         EventManager.TriggerEvent(AppUtils.floorChanged);
