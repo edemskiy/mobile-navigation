@@ -10,7 +10,6 @@ using TMPro;
 
 public class LabelsController : MonoBehaviour
 {
-    //public PointsInputsController pointsInputsController;
     public GameObject buttonPrefab;
     public GameObject markerPrefab;
     public GameObject content;
@@ -36,7 +35,6 @@ public class LabelsController : MonoBehaviour
         labelsStorage = new Dictionary<string, GameObject>();
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
         LoadLabels();
-
         floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
 
@@ -57,21 +55,25 @@ public class LabelsController : MonoBehaviour
 
     void Update()
     {
+        // если нажатие происходит поверх интерфейса: выход
         if (AppUtils.IsPointerOverUIObject())
         {
             return;
         }
 
+        // нажатие левой кнопкой мыши (пальца)
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
+                // точка на карте в которой произошло касание
                 touchPoint = hit.point;
             }
         }
 
+        // поднятие левой кнопки мыши (пальца)
         if (Input.GetMouseButtonUp(0))
         {
             RaycastHit hit;
@@ -79,6 +81,8 @@ public class LabelsController : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 Label label = hit.transform.gameObject.GetComponent<Label>();
+                // если попали в объект метки, и отпустили палец в той же точке, где и нажали,
+                // то показываем инфо о метке
                 if (label != null && touchPoint == hit.point)
                 {
                     labelsButtonsStorage.OpenLabelInfoWindow(LabelsList.self.getLabel(label.labelName));
@@ -89,6 +93,7 @@ public class LabelsController : MonoBehaviour
 
     public void LoadLabels()
     {
+        // если на устройстве есть файл с сохраненными метками то считываем из него
         if (File.Exists(dataPath))
         {
             using (StreamReader streamReader = File.OpenText(dataPath))
@@ -96,6 +101,7 @@ public class LabelsController : MonoBehaviour
                 LoadedLabelsListHandler(streamReader.ReadToEnd());                
             }
         }
+        // иначе загружаем с сервера
         else
         {
             if (!AppUtils.isOnline())
@@ -107,6 +113,7 @@ public class LabelsController : MonoBehaviour
         }
     }
 
+    // фильтрация меток по имени или информации
     public void SearchLabels(string s)
     {
         foreach (Transform obj in content.transform)
@@ -122,6 +129,7 @@ public class LabelsController : MonoBehaviour
         }
     }
 
+    // выделение метки (изменение цвета)
     public void HighlightLabel(string labelName, Color color)
     {
         GameObject labelObj = null;
@@ -132,6 +140,7 @@ public class LabelsController : MonoBehaviour
         }
     }
 
+    // постобработка загруженных меток
     private void LoadedLabelsListHandler(string labelsList)
     {
         JSONObject labelsListJSON = new JSONObject(labelsList);
@@ -141,6 +150,7 @@ public class LabelsController : MonoBehaviour
             return;
         }
 
+        // перебираем все метки
         for (int i = 0; i < labelsListJSON.list.Count; i++)
         {
             JSONObject item = labelsListJSON.list[i];
@@ -149,14 +159,18 @@ public class LabelsController : MonoBehaviour
             {
                 string name = Regex.Unescape(item.GetField(AppUtils.JSON_NAME).str);
                 LabelsList.self.update(name, item);
-                
+
+                // создаем метку на карте
                 GameObject newLabel = GameObject.Instantiate(markerPrefab);
                 newLabel.transform.position = AppUtils.stringToVector3(
                     item.GetField(AppUtils.JSON_LOCATION).str) + (Vector3.up * 0.5f);
                 newLabel.transform.SetParent(markersStore.transform);
-                labelsStorage.Add(name, newLabel);
                 newLabel.GetComponent<Label>().SetName(name);
+                
+                // добавляем в хранилище меток
+                labelsStorage.Add(name, newLabel);
 
+                // создаем кнопку в меню поиска
                 labelsButtonsStorage.AddLabelButton(name);
             }
             else

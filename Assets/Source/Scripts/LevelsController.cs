@@ -42,8 +42,4 @@ public class LevelsController : MonoBehaviour {
         EventManager.TriggerEvent(AppUtils.floorChanged);
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
 }

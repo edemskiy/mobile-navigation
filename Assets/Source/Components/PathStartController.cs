@@ -103,7 +103,6 @@ public class PathStartController : MonoBehaviour
         Vector3 location = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
         Camera.main.transform.position = new Vector3(location.x, Camera.main.transform.position.y, location.z);
         */
-
     }
 
     public void ShowInfoWindow(JSONObject label)
@@ -127,10 +126,5 @@ public class PathStartController : MonoBehaviour
     public void ShowScaner()
     {
         SceneManager.LoadScene(AppUtils.ScanerSceneName);
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
