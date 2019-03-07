@@ -31,10 +31,6 @@ public class LevelsController : MonoBehaviour {
 
     public void SetActive(int levelNum)
     {
-        // установка цвета кнопки
-
-        
-
         for (int i=0; i < levels.Length; i++)
         {
             levelButtons[i].GetComponentInChildren<Text>().color = AppUtils.DefaultLabelColor;

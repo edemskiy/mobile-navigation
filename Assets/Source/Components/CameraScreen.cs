@@ -13,7 +13,7 @@ public class CameraScreen : MonoBehaviour {
     public bool arucoScaner = false;
     public bool qrScaner = true;
 
-    bool camAvailable, markerFound;
+    bool camAvailable;
     private string infoText = null;
     private WebCamTexture backCam;
     private Texture2D texture;
@@ -52,7 +52,8 @@ public class CameraScreen : MonoBehaviour {
     public AspectRatioFitter fit;
     public Text info;
     
-    void Start () {
+    IEnumerator Start () {
+        yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
         Screen.orientation = ScreenOrientation.Portrait;
         frames = 0;
         defaultBackground = background.texture;
@@ -60,9 +61,9 @@ public class CameraScreen : MonoBehaviour {
                 
         if (devices.Length == 0)
         {
-            info.text = "Камера не найдена";
+            info.text = "Ошибка: Камера не найдена";
             camAvailable = false;
-            return;
+            yield break;
         }
 
         for (int i = 0; i < devices.Length; i++)
@@ -76,14 +77,17 @@ public class CameraScreen : MonoBehaviour {
 
         if (backCam == null)
         {
-            info.text = "Задняя камера не найдена";
-            return;
+            info.text = "Ошибка: Задняя камера не найдена";
+            yield break;
         }
         backCam.Play();
         
         texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
+
+        Debug.Log($"texWidth: {texture.width}, texHeight: {texture.height}");
+
         background.texture = texture;
-         
+        Debug.Log($"bgtxWidth: {background.texture.width}, bgtxHeight: {background.texture.height}");
         camAvailable = true;
         
         dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
@@ -254,7 +258,6 @@ public class CameraScreen : MonoBehaviour {
         }
         else
         {
-
             //infoText = "no markers found";
         }        
     }

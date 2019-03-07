@@ -9,6 +9,7 @@ public class QRValidator : MonoBehaviour
 {
     public Text nameText;
     public Text aboutText;
+    public GameObject serviceWindow;
     public GameObject qrLabelInfo;
     private UnityAction<string> qrDetectedListener;
     private string nameString, aboutString;
@@ -45,7 +46,6 @@ public class QRValidator : MonoBehaviour
             info.HasField(AppUtils.JSON_LOCATION) &&
             info.HasField(AppUtils.JSON_FLOOR))
         {
-            Debug.Log(s);
             labelJSON = s;
             nameString = info.GetField(AppUtils.JSON_NAME).str;
             aboutString = info.GetField(AppUtils.JSON_INFO).str;
@@ -53,7 +53,7 @@ public class QRValidator : MonoBehaviour
         }
         else
         {
-            // nameString = "Неверный формат маркера";
+            serviceWindow.SetActive(true);
         }
     }
 
