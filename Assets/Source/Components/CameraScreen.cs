@@ -10,16 +10,21 @@ using ZXing;
 
 public class CameraScreen : MonoBehaviour {
 
-    public bool arucoScaner = false;
-    public bool qrScaner = true;
+    public bool searchForAruco = false; // искать aruco маркер в кадре?
+    public bool searchForQr = true; // искать qr-метку в кадре?
+    public RawImage background;
+    public AspectRatioFitter fit;
+    public Text info; // поле для вывода текста ошибок
 
     bool camAvailable;
-    private string infoText = null;
     private WebCamTexture backCam;
     private Texture2D texture;
     private Texture defaultBackground;
     private WebCamDevice[] devices;
     private int cameraId = 0;
+    private int frames; // счетчик фреймов
+    
+    /* для aruco сканера */
     private Dictionary dictionary;
     private Mat rgbaMat;
     private Color32[] colors;
@@ -27,13 +32,17 @@ public class CameraScreen : MonoBehaviour {
     private Mat ids;
     private DetectorParameters detectorParams;
     private List<Mat> rejectedCorners;
+    private Mat camMatrix;
+    private MatOfDouble distCoeffs;
+    private Mat rvecs, tvecs;
+    /* ----------------- */
 
+    /* для qr сканера */
+    BarcodeReader qrReader;
     private string qrInfo;
-
-    int frames;
-    int W, H;
     private Color[] originalc;
     private Color32[] targetColorARR;
+    private int W, H;
 #if UNITY_IOS
 	int blockWidth = 450;
 #elif UNITY_ANDROID
@@ -41,24 +50,18 @@ public class CameraScreen : MonoBehaviour {
 #else
 	int blockWidth = 350;
 #endif
-
-    Mat camMatrix;
-    MatOfDouble distCoeffs;
-    Mat rvecs, tvecs;
-
-    BarcodeReader qrReader;
-
-    public RawImage background;
-    public AspectRatioFitter fit;
-    public Text info;
+    /* ----------------- */    
     
     IEnumerator Start () {
+        // ждем подтверждения разрешения на исползование камеры
         yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
+
         Screen.orientation = ScreenOrientation.Portrait;
         frames = 0;
         defaultBackground = background.texture;
         devices = WebCamTexture.devices;
-                
+        
+        // если камеры не найдены: ошибка.
         if (devices.Length == 0)
         {
             info.text = "Ошибка: Камера не найдена";
@@ -67,8 +70,10 @@ public class CameraScreen : MonoBehaviour {
             yield break;
         }
 
+        // перебор всех доступных камер
         for (int i = 0; i < devices.Length; i++)
         {
+            // если камера не фронтальная, то используем её
             if (!devices[i].isFrontFacing)
             {
                 backCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
@@ -76,19 +81,22 @@ public class CameraScreen : MonoBehaviour {
             }
         }
 
+        // если задних камер не найдено: ошибка
         if (backCam == null)
         {
             info.text = "Ошибка: Задняя камера не найдена";
             background.gameObject.SetActive(false);
             yield break;
         }
-        backCam.Play();
-        
-        texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
 
-        background.texture = texture;
+        // включаем камеру
+        backCam.Play();
         camAvailable = true;
-        
+
+        texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
+        background.texture = texture;
+
+        /* Инициализация переменных для работы aruco сканера */
         dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
         rgbaMat = new Mat(backCam.height, backCam.width, CvType.CV_8UC3);
         colors = new Color32[backCam.width * backCam.height];
@@ -101,6 +109,7 @@ public class CameraScreen : MonoBehaviour {
         distCoeffs = new MatOfDouble(0, 0, 0, 0, 0);
         rvecs = new Mat();
         tvecs = new Mat();
+        /*---------------------------------------------------*/
 
         qrReader = new BarcodeReader();
         qrReader.AutoRotate = true;
@@ -116,14 +125,14 @@ public class CameraScreen : MonoBehaviour {
 
         Utils.webCamTextureToMat(backCam, rgbaMat, colors);
 
-        if (((frames+10) % 20 == 0) && arucoScaner)
+        if (((frames+10) % 20 == 0) && searchForAruco)
         {
             DetectAruco();
         }
 
         Utils.fastMatToTexture2D(rgbaMat, texture);
 
-        if ((frames % 20 == 0) && qrScaner)
+        if ((frames % 20 == 0) && searchForQr)
         {
             DetectQR();
         }
@@ -151,6 +160,7 @@ public class CameraScreen : MonoBehaviour {
         return camMatrix;
     }
 
+    // настройка правильных пропорций изображения камеры
     private void OnCameraItit()
     {
         float ratio = (float)backCam.width / (float)backCam.height;
@@ -175,6 +185,7 @@ public class CameraScreen : MonoBehaviour {
         background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
     }
 
+    // распознавание qr-метки
     public void DetectQR()
     {
         W = backCam.width;
@@ -224,13 +235,14 @@ public class CameraScreen : MonoBehaviour {
         });
     }
 
+    // распознавание aruco маркера
     public void DetectAruco()
-    {
-        
+    {        
         Aruco.detectMarkers(rgbaMat, dictionary, corners, ids, detectorParams, rejectedCorners);
+        
+        // если в кадре обнаружен только один aruko маркер
         if (ids.total() == 1)
         {
-
             Aruco.drawDetectedMarkers(rgbaMat, corners, ids);
             float markerLength = 0.05f;
             Aruco.estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs, tvecs);
@@ -240,9 +252,9 @@ public class CameraScreen : MonoBehaviour {
             double[] tVectorArr = tvecs.get(0, 0);
             Vector3 tVector = new Vector3((float)tVectorArr[0], (float)tVectorArr[1], (float)tVectorArr[2]);
 
-            infoText = "id маркера: " + ids.get(0, 0)[0] + ". Distance*: " + tVector.magnitude;
+            Debug.Log($"id маркера: {ids.get(0, 0)[0]}. Distance*:  {tVector.magnitude}");
 
-            /* Draw axes*/
+            /* Нарисовать оси*/
             /*
             for (int i = 0; i < ids.total(); i++)
             {
@@ -253,14 +265,12 @@ public class CameraScreen : MonoBehaviour {
                     Aruco.drawAxis(rgbaMat, camMatrix, distCoeffs, rvec, tvec, markerLength * 0.5f);
                 }
             }
-            */            
+            */
+            /*----------------------------------------------------------------*/
         }
-        else
-        {
-            //infoText = "no markers found";
-        }        
     }
 
+    // переключение камеры (не используется)
     public void SwitchCam()
     {
         if (backCam)
@@ -279,6 +289,7 @@ public class CameraScreen : MonoBehaviour {
         }
     }
 
+    // выключение активной камеры
     public void TurnOffCam()
     {
         if (camAvailable)
