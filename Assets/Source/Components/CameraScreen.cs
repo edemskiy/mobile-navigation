@@ -62,6 +62,7 @@ public class CameraScreen : MonoBehaviour {
         if (devices.Length == 0)
         {
             info.text = "Ошибка: Камера не найдена";
+            background.gameObject.SetActive(false);
             camAvailable = false;
             yield break;
         }
@@ -78,16 +79,14 @@ public class CameraScreen : MonoBehaviour {
         if (backCam == null)
         {
             info.text = "Ошибка: Задняя камера не найдена";
+            background.gameObject.SetActive(false);
             yield break;
         }
         backCam.Play();
         
         texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
 
-        Debug.Log($"texWidth: {texture.width}, texHeight: {texture.height}");
-
         background.texture = texture;
-        Debug.Log($"bgtxWidth: {background.texture.width}, bgtxHeight: {background.texture.height}");
         camAvailable = true;
         
         dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
@@ -282,7 +281,10 @@ public class CameraScreen : MonoBehaviour {
 
     public void TurnOffCam()
     {
-        backCam.Stop();
-        camAvailable = false;
+        if (camAvailable)
+        { 
+            backCam.Stop();
+            camAvailable = false;
+        }
     }
 }
