@@ -982,8 +982,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   searchForAruco: 0
-  searchForQr: 0
-  allowFrontCam: 1
+  searchForQr: 1
+  allowFrontCam: 0
   background: {fileID: 475342232}
   fit: {fileID: 0}
   info: {fileID: 762821929}

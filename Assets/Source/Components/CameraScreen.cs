@@ -95,7 +95,8 @@ public class CameraScreen : MonoBehaviour {
         camAvailable = true;
 
         texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
-        background.texture = texture;
+        //background.texture = texture;
+        background.texture = backCam;
 
         /* Инициализация переменных для работы aruco сканера */
         dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
@@ -124,6 +125,8 @@ public class CameraScreen : MonoBehaviour {
             return;
         frames++;
 
+
+        /*
         Utils.webCamTextureToMat(backCam, rgbaMat, colors);
 
         if (((frames+10) % 20 == 0) && searchForAruco)
@@ -132,8 +135,9 @@ public class CameraScreen : MonoBehaviour {
         }
 
         Utils.fastMatToTexture2D(rgbaMat, texture);
+        */
 
-        if ((frames % 20 == 0) && searchForQr)
+        if ((frames % 15 == 0) && searchForQr)
         {
             DetectQR();
         }
