@@ -12,6 +12,7 @@ public class CameraScreen : MonoBehaviour {
 
     public bool searchForAruco = false; // искать aruco маркер в кадре?
     public bool searchForQr = true; // искать qr-метку в кадре?
+    public bool allowFrontCam = false;
     public RawImage background;
     public AspectRatioFitter fit;
     public Text info; // поле для вывода текста ошибок
@@ -74,7 +75,7 @@ public class CameraScreen : MonoBehaviour {
         for (int i = 0; i < devices.Length; i++)
         {
             // если камера не фронтальная, то используем её
-            if (!devices[i].isFrontFacing)
+            if (!devices[i].isFrontFacing || allowFrontCam)
             {
                 backCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
                 cameraId = i;
@@ -94,7 +95,8 @@ public class CameraScreen : MonoBehaviour {
         camAvailable = true;
 
         texture = new Texture2D(backCam.width, backCam.height, TextureFormat.RGB24, false);
-        background.texture = texture;
+        //background.texture = texture;
+        background.texture = backCam;
 
         /* Инициализация переменных для работы aruco сканера */
         dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
@@ -123,6 +125,8 @@ public class CameraScreen : MonoBehaviour {
             return;
         frames++;
 
+
+        /*
         Utils.webCamTextureToMat(backCam, rgbaMat, colors);
 
         if (((frames+10) % 20 == 0) && searchForAruco)
@@ -131,8 +135,9 @@ public class CameraScreen : MonoBehaviour {
         }
 
         Utils.fastMatToTexture2D(rgbaMat, texture);
+        */
 
-        if ((frames % 20 == 0) && searchForQr)
+        if ((frames % 15 == 0) && searchForQr)
         {
             DetectQR();
         }
@@ -163,26 +168,26 @@ public class CameraScreen : MonoBehaviour {
     // настройка правильных пропорций изображения камеры
     private void OnCameraItit()
     {
-        float ratio = (float)backCam.width / (float)backCam.height;
+        int orient = -backCam.videoRotationAngle;
+        background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
 
-        /*
-        if (Screen.height >= Screen.width)
-        {            
-            ratio = (float)Screen.height / (float)Screen.width;
+        int ScreenWidth = Mathf.Max(Screen.width, Screen.height);
+        int ScreenHeight = Mathf.Min(Screen.width, Screen.height);
+
+        int CamWidth = Mathf.Max(backCam.width, backCam.height);
+        int CamHeight = Mathf.Min(backCam.width, backCam.height);
+        
+        float camRatio = CamWidth * 1.0f/ CamHeight;
+        float screenRatio = ScreenWidth * 1.0f / ScreenHeight;
+
+        if(Mathf.Abs(orient) == 90)
+        {
+            background.rectTransform.localScale = new Vector3(screenRatio, 1 / camRatio, 1);
         }
         else
         {
-            ratio = (float)Screen.width / (float)Screen.height;
+            background.rectTransform.localScale = new Vector3(screenRatio * camRatio, 1, 1);
         }
-        */
-
-        fit.aspectRatio = ratio;
-
-        float scaleY = backCam.videoVerticallyMirrored ? -1f : 1f;
-        background.rectTransform.localScale = new Vector3(1f, scaleY, 1f);
-
-        int orient = -backCam.videoRotationAngle;
-        background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
     }
 
     // распознавание qr-метки
