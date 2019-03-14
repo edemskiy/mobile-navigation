@@ -52,14 +52,18 @@ public class AppUtils
 
     public static Vector3 stringToVector3(string sVector)
     {
-        // Remove the parentheses
         if (sVector.StartsWith("(") && sVector.EndsWith(")"))
         {
             sVector = sVector.Substring(1, sVector.Length - 2);
         }
-
-        // Split the items
+        
         string[] array = sVector.Split(',');
+
+#if UNITY_EDITOR // в редакторе не парсится str->float, если число с точкой  ¯\_(ツ)_/¯ 
+        array[0] = array[0].Replace(".", ",");
+        array[1] = array[1].Replace(".", ",");
+        array[2] = array[2].Replace(".", ",");
+#endif
 
         float x = 0.0f;
         float y = 0.0f;
