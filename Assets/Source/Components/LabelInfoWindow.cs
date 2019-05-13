@@ -8,5 +8,6 @@ public class LabelInfoWindow : MonoBehaviour
 {
     public Text audienceName;
     public Text audienceInfo;
-    public Button buttonFrom, buttonTo;
+    public Button buttonFrom;
+    public Button buttonTo;
 }
