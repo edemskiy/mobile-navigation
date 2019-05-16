@@ -31,6 +31,7 @@ public class AppUtils
     // JSON fields
     public const string JSON_ID = "id";
     public const string JSON_NAME = "name";
+    public const string JSON_NAME_FULL = "name_full";
     public const string JSON_KEY = "key";
     public const string JSON_URL = "url";
     public const string JSON_DATA = "data";

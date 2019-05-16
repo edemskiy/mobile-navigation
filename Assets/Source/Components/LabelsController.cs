@@ -118,13 +118,15 @@ public class LabelsController : MonoBehaviour
     {
         foreach (Transform obj in content.transform)
         {
+            JSONObject label = LabelsList.self.getLabel(obj.name);
+            string fullInfo = obj.name + label.GetField(AppUtils.JSON_NAME_FULL) + label.GetField(AppUtils.JSON_INFO);
             if(s.Length < 2)
             {
-                obj.gameObject.SetActive(obj.name.StartsWith(s));
+                obj.gameObject.SetActive(fullInfo.StartsWith(s));
             }
             else
             {
-                obj.gameObject.SetActive(obj.name.Contains(s));
+                obj.gameObject.SetActive(fullInfo.Contains(s));
             }            
         }
     }

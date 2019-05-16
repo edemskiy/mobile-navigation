@@ -85,10 +85,11 @@ public class LabelsList
 		return null;
 	}
 
-	public JSONObject initLabel(string name, string location, string info)
+	public JSONObject initLabel(string name, string fullName, string location, string info)
 	{
 		JSONObject json = new JSONObject();
 		json.SetField(AppUtils.JSON_NAME, AppUtils.fixInputString(name));
+        json.SetField(AppUtils.JSON_NAME_FULL, AppUtils.fixInputString(fullName));
 		json.SetField(AppUtils.JSON_LOCATION, location);
 		// Чтобы различать метки при чтении из QR кода
 		json.SetField(AppUtils.JSON_TYPE, "label");
