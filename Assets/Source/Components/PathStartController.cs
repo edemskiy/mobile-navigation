@@ -11,6 +11,7 @@ public class PathStartController : MonoBehaviour
     private string activeLabelFromName, activeLabelToName;
     public LabelsController labelsController;
     public NavMeshController navMeshController;
+    public Button pathFromButton, pathToButton;
     private JSONObject labelInfo;
 
     void Start()
@@ -58,7 +59,7 @@ public class PathStartController : MonoBehaviour
             AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
             );
 
-        labelInfoWindow.buttonFrom.GetComponentInChildren<Text>().text = activeLabelFromName;
+        pathFromButton.GetComponentInChildren<Text>().text = activeLabelFromName;
 
         labelsController.HighlightLabel(
             activeLabelFromName,
@@ -83,7 +84,7 @@ public class PathStartController : MonoBehaviour
             AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
             );
 
-        labelInfoWindow.buttonTo.GetComponentInChildren<Text>().text = activeLabelToName;
+        pathToButton.GetComponentInChildren<Text>().text = activeLabelToName;
 
         labelsController.HighlightLabel(
             activeLabelToName,
