@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelsController : MonoBehaviour {
@@ -13,6 +11,7 @@ public class LevelsController : MonoBehaviour {
 
     public GameObject activeLevel;
     public static Vector3 activeLevelPosition;
+    public static int activeLabelNumber;
     // Use this for initialization
     void Start () {
 
@@ -40,6 +39,7 @@ public class LevelsController : MonoBehaviour {
         levelButtons[levelNum - 1].GetComponentInChildren<Text>().color = AppUtils.LightYellowColor;
         activeLevel = levels[levelNum-1];
         activeLevelPosition = activeLevel.transform.position;
+        activeLabelNumber = levelNum;
         EventManager.TriggerEvent(AppUtils.floorChanged);
     }
 

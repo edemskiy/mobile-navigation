@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ArucoModule;
-using OpenCVForUnity.UnityUtils;
-
 using ZXing;
 
 public class CameraScreen : MonoBehaviour {
