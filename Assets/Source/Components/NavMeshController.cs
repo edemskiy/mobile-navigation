@@ -155,9 +155,11 @@ public class NavMeshController: MonoBehaviour
     public void SetSource(Vector3 position)
 	{
         player.SetActive(true);
+
         DisableNavAgent();
         navMeshAgent.Warp(position);
         EnableNavAgent();
+
         DrawPath();        
     }
 
