@@ -4,7 +4,6 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.Networking;
 using System.Text.RegularExpressions;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 
@@ -192,10 +191,10 @@ public class LabelsController : MonoBehaviour
     {
         foreach (Transform marker in markersStore.transform)
         {
-            marker.gameObject.SetActive((marker.gameObject.transform.position.y < LevelsController.activeLevelPosition.y + 1f) &&
-                (marker.gameObject.transform.position.y > LevelsController.activeLevelPosition.y - 5f));
-            // float markerPos = MyUtils.stringToVector3(LabelsList.self.getLabel(marker.GetComponent<Label>().GetName()).GetField(MyUtils.JSON_LOCATION).str).y;
-            // content.transform.Find(marker.GetComponent<Label>().GetName()).gameObject.SetActive(marker.gameObject.activeSelf);
+            marker.gameObject.SetActive(
+                LabelsList.self.getLabel(marker.GetComponent<Label>().GetName())
+                .GetField(AppUtils.JSON_FLOOR).str == LevelsController.activeLabelNumber.ToString()
+                );
         }
     }
 
