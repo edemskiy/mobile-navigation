@@ -17,9 +17,12 @@ public class PlayerTargetSwapScript : MonoBehaviour
         {
             navMeshController.SwitchRoutePoints();
             string tmp = ButtonFrom.GetComponentInChildren<Text>().text;
-
+            
             ButtonFrom.GetComponentInChildren<Text>().text = ButtonTo.GetComponentInChildren<Text>().text;
             ButtonTo.GetComponentInChildren<Text>().text = tmp;
+
+            labelsController.HighlightLabel(ButtonFrom.GetComponentInChildren<Text>().text, AppUtils.LightRedColor);
+            labelsController.HighlightLabel(ButtonTo.GetComponentInChildren<Text>().text, AppUtils.LightBlueColor);
         }        
     }
 
