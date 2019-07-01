@@ -131,11 +131,17 @@ public class LabelsController : MonoBehaviour
         }
     }
 
-    // выделение метки (изменение цвета)
-    public void HighlightLabel(string labelName, Color color)
+    public GameObject GetLabel(string labelName)
     {
         GameObject labelObj = null;
         labelsStorage.TryGetValue(labelName, out labelObj);
+        return labelObj;
+    }
+
+    // выделение метки (изменение цвета)
+    public void HighlightLabel(string labelName, Color color)
+    {
+        GameObject labelObj = GetLabel(labelName);
         if(labelObj != null)
         {
             labelObj.GetComponent<TextMeshPro>().color = color;
