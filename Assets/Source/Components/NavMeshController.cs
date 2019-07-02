@@ -30,9 +30,6 @@ public class NavMeshController: MonoBehaviour
 
     private void Start() 
 	{
-        // проверяем есть ли компонент NavMeshAgent
-        
-        
         // строим NavMesh для всех поверхностей (долго!)
         /*
         for (int i = 0; i < navMeshSufaces.Length; i++)
@@ -40,16 +37,11 @@ public class NavMeshController: MonoBehaviour
             navMeshSufaces[i].BuildNavMesh();
         }
         */
-
-        //levelsController.SetActive(defaultLevel);
-
-        
+                
         player.SetActive(false);
-
-
+        
         player.GetComponent<Renderer>().enabled = false;
         target.GetComponent<Renderer>().enabled = false;
-
     }
 
     // Функционал обработки событий. Начало.
@@ -160,7 +152,7 @@ public class NavMeshController: MonoBehaviour
         navMeshAgent.Warp(position);
         EnableNavAgent();
 
-        DrawPath();        
+        DrawPath();
     }
 
     // установка конечной точки пути
@@ -211,5 +203,4 @@ public class NavMeshController: MonoBehaviour
         player.SetActive(false);
         target.SetActive(false);
     }
-
 }

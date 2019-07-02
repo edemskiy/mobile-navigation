@@ -44,50 +44,72 @@ public class PathStartController : MonoBehaviour
         }
     }
 
-    public void OnRouteFromClick()
+    public void SetPathStart(string labelName)
     {
         labelsController.HighlightLabel(
-            activeLabelFromName,
+           activeLabelFromName,
+           AppUtils.DefaultLabelColor
+           );
+
+        navMeshController.SetSource(AppUtils.stringToVector3(
+                LabelsList.self.getLabel(labelName)
+                .GetField(AppUtils.JSON_LOCATION).str
+                ));
+
+        pathFromButton.GetComponentInChildren<Text>().text = labelName;
+
+        labelsController.HighlightLabel(labelName, AppUtils.LightRedColor);
+        activeLabelFromName = labelName;
+    }
+
+    public void SetPathEndpoint(string labelName)
+    {
+        labelsController.HighlightLabel(
+            activeLabelToName,
+            AppUtils.DefaultLabelColor
+            );
+        
+        navMeshController.SetDestination(AppUtils.stringToVector3(
+                LabelsList.self.getLabel(labelName)
+                .GetField(AppUtils.JSON_LOCATION).str
+                ));
+
+        pathToButton.GetComponentInChildren<Text>().text = labelName;
+
+        labelsController.HighlightLabel(labelName, AppUtils.LightBlueColor);
+        activeLabelToName = labelName;
+    }
+
+    public void ClearPath()
+    {
+        navMeshController.ResetPath();
+
+        labelsController.HighlightLabel(
+            pathFromButton.GetComponentInChildren<Text>().text,
             AppUtils.DefaultLabelColor
             );
 
-        activeLabelFromName = labelInfo.GetField(AppUtils.JSON_NAME).str;
-
-        navMeshController.SetSource(
-            AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
-            );
-
-        pathFromButton.GetComponentInChildren<Text>().text = activeLabelFromName;
-
         labelsController.HighlightLabel(
-            activeLabelFromName,
-            AppUtils.LightRedColor
+            pathToButton.GetComponentInChildren<Text>().text,
+            AppUtils.DefaultLabelColor
             );
 
-        SetUpCamera();
+        activeLabelFromName = activeLabelToName = "";
 
+        pathFromButton.GetComponentInChildren<Text>().text = AppUtils.ButtonFrom_DefaultName;
+        pathToButton.GetComponentInChildren<Text>().text = AppUtils.ButtonTo_DefaultName;
+    }       
+
+    public void OnRouteFromClick()
+    {
+        SetPathStart(labelInfo.GetField(AppUtils.JSON_NAME).str);
+        SetUpCamera();
         labelInfoWindow.gameObject.SetActive(false);
     }
 
     public void OnRouteToClick()
     {
-        labelsController.HighlightLabel(
-            activeLabelToName,
-            AppUtils.DefaultLabelColor
-            );
-
-        activeLabelToName = labelInfo.GetField(AppUtils.JSON_NAME).str;
-
-        navMeshController.SetDestination(
-            AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str)
-            );
-
-        pathToButton.GetComponentInChildren<Text>().text = activeLabelToName;
-
-        labelsController.HighlightLabel(
-            activeLabelToName,
-             AppUtils.LightBlueColor
-             );
+        SetPathEndpoint(labelInfo.GetField(AppUtils.JSON_NAME).str);
         SetUpCamera();
         labelInfoWindow.gameObject.SetActive(false);
     }
