@@ -46,37 +46,49 @@ public class PathStartController : MonoBehaviour
 
     public void SetPathStart(string labelName)
     {
+        // меняем цвет старого отправного маркера на белый
         labelsController.HighlightLabel(
            activeLabelFromName,
            AppUtils.DefaultLabelColor
            );
 
+        // устанавливаем новый отправной маркер как начальную точку пути
         navMeshController.SetSource(AppUtils.stringToVector3(
                 LabelsList.self.getLabel(labelName)
                 .GetField(AppUtils.JSON_LOCATION).str
                 ));
 
+        // указываем имя нового отправного маркера на кнопке "откуда"
         pathFromButton.GetComponentInChildren<Text>().text = labelName;
 
+        // меняем цвет нового отправного маркера на красный
         labelsController.HighlightLabel(labelName, AppUtils.LightRedColor);
+
+        // сохраняем имя новго отправного маркера
         activeLabelFromName = labelName;
     }
 
     public void SetPathEndpoint(string labelName)
     {
+        // меняем цвет старого конечного маркера на белый
         labelsController.HighlightLabel(
             activeLabelToName,
             AppUtils.DefaultLabelColor
             );
-        
+
+        // устанавливаем новый конечный маркер как конечную точку пути
         navMeshController.SetDestination(AppUtils.stringToVector3(
                 LabelsList.self.getLabel(labelName)
                 .GetField(AppUtils.JSON_LOCATION).str
                 ));
 
+        // указываем имя нового конечного маркера на кнопке "куда"
         pathToButton.GetComponentInChildren<Text>().text = labelName;
 
+        // меняем цвет нового конечного маркера на голубой
         labelsController.HighlightLabel(labelName, AppUtils.LightBlueColor);
+
+        // сохраняем имя новго конечного маркера
         activeLabelToName = labelName;
     }
 
@@ -130,17 +142,9 @@ public class PathStartController : MonoBehaviour
     {
         labelInfo = label;
         labelInfoWindow.audienceName.text = labelInfo.GetField(AppUtils.JSON_NAME).str;
-        /* 
-         * В информации о помещении пока стоит заглушка
-         * так как сейчас нет информации об аудиториях
+        labelInfoWindow.audienceFullName.text = labelInfo.GetField(AppUtils.JSON_NAME_FULL).str;
+        labelInfoWindow.audienceInfo.text = labelInfo.GetField(AppUtils.JSON_INFO).str;
         
-        string info = label.GetField(AppUtils.JSON_INFO).str;
-        Debug.Log(info);
-        if(info != "")
-        {
-            labelInfoWindow.audienceInfo.text = label.GetField(AppUtils.JSON_INFO).str;
-        }        
-        */
         labelInfoWindow.gameObject.SetActive(true);
     }
     
