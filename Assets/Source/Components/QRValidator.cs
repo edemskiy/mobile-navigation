@@ -5,13 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class QRValidator : MonoBehaviour
 {
-    public Text audienceName; // поле для вывода названия помещения
-    public Text audienceInfo; // поле для вывода информации о помещении
     public GameObject serviceWindow; // окно для вывода ошибок
-    public GameObject qrInfoWindow; // окно с информацией о помещении
+    public LabelInfoWindow labelInfoWindow; // окно с информацией о помещении
 
     private UnityAction<string> qrDetectedListener; 
-    private string nameString, aboutString;
+    private string nameString, fullNameString, aboutString;
     private string labelJSON;
     private bool qrFound;
 
@@ -51,6 +49,7 @@ public class QRValidator : MonoBehaviour
             // прямое присваивание в текстовые поля интерфейса не работает;
             // скорее всего из-за асинхронности обработки qr-метки
             nameString = info.GetField(AppUtils.JSON_NAME).str;
+            fullNameString = info.GetField(AppUtils.JSON_NAME_FULL).str;
             aboutString = info.GetField(AppUtils.JSON_INFO).str;
             qrFound = true;
         }
@@ -85,13 +84,15 @@ public class QRValidator : MonoBehaviour
     public void CloseButtonOnClick()
     {
         qrFound = false;
-        qrInfoWindow.gameObject.SetActive(false);
+        labelInfoWindow.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        audienceName.text = nameString;
-        audienceInfo.text = aboutString;
-        qrInfoWindow.gameObject.SetActive(qrFound);
+        labelInfoWindow.audienceName.text = nameString;
+        labelInfoWindow.audienceFullName.text = fullNameString;
+        labelInfoWindow.audienceInfo.text = aboutString;
+        
+        labelInfoWindow.gameObject.SetActive(qrFound);
     }
 }
