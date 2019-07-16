@@ -119,6 +119,7 @@ public class LabelsController : MonoBehaviour
         {
             JSONObject label = LabelsList.self.getLabel(obj.name);
             string fullInfo = obj.name + label.GetField(AppUtils.JSON_NAME_FULL) + label.GetField(AppUtils.JSON_INFO);
+            Debug.Log(fullInfo + fullInfo.Contains(s));
             if(s.Length < 2)
             {
                 obj.gameObject.SetActive(fullInfo.StartsWith(s));
@@ -126,7 +127,7 @@ public class LabelsController : MonoBehaviour
             else
             {
                 obj.gameObject.SetActive(fullInfo.Contains(s));
-            }            
+            }
         }
     }
 

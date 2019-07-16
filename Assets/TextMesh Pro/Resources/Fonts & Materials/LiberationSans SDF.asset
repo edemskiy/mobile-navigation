@@ -82,7 +82,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _Diffuse: 0.5
     - _DstBlend: 0
-    - _FaceDilate: 0.048
+    - _FaceDilate: 0
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
     - _GlossMapScale: 1
@@ -99,16 +99,16 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _OutlineSoftness: 0.08
+    - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0.172
+    - _OutlineWidth: 0.4
     - _Parallax: 0.02
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 0.73125
-    - _ScaleRatioC: 0.68805
+    - _ScaleRatioC: 0.73125
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -207,10 +207,10 @@ MonoBehaviour:
     PointSize: 86
     Scale: 1
     CharacterCount: 250
-    LineHeight: 98.90625
+    LineHeight: 97.33
     Baseline: 0
-    Ascender: 77.84375
-    CapHeight: 59.1875
+    Ascender: 88.1
+    CapHeight: 58.9
     Descender: -18.21875
     CenterLine: 0
     SuperscriptOffset: 77.84375
@@ -230,9 +230,9 @@ MonoBehaviour:
     x: 10
     y: 1033
     width: 23.90625
-    height: 96.0625
+    height: 106.31875
     xOffset: 0
-    yOffset: 77.84375
+    yOffset: 88.1
     xAdvance: 23.90625
     scale: 1
   - id: 33

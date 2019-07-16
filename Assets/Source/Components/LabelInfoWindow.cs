@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class LabelInfoWindow : MonoBehaviour
 {
-    public Text audienceName;
-    public Text audienceInfo;
-    public Text audienceFullName;
-    //public Button buttonFrom;
-    //public Button buttonTo;
+    public TextMeshProUGUI audienceName;
+    public TextMeshProUGUI audienceInfo;
+    public TextMeshProUGUI audienceFullName;
 }
