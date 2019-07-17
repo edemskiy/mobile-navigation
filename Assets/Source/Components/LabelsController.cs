@@ -122,9 +122,7 @@ public class LabelsController : MonoBehaviour
                 +label.GetField(AppUtils.JSON_NAME_FULL).str
                 +label.GetField(AppUtils.JSON_INFO).str)
                 .ToLower();
-
-            if (label.GetField(AppUtils.JSON_INFO).str != "")
-                Debug.Log(fullInfo + fullInfo.Contains(s));
+            
             if(s.Length < 2)
             {
                 obj.gameObject.SetActive(fullInfo.StartsWith(s));
