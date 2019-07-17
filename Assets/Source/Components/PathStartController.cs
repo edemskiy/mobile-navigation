@@ -116,7 +116,7 @@ public class PathStartController : MonoBehaviour
     public void OnRouteFromClick()
     {
         SetPathStart(labelInfo.GetField(AppUtils.JSON_NAME).str);
-        SetUpCamera();
+        SetUpCamera();        
         labelInfoWindow.gameObject.SetActive(false);
     }
 
@@ -129,14 +129,19 @@ public class PathStartController : MonoBehaviour
 
     private void SetUpCamera()
     {
-        // Раскомментировать, когда в метках будет инфа об этаже!
-        /*
-        int levelNum = 0;
-        int.TryParse(labelInfo.GetField(AppUtils.JSON_FLOOR).str, out levelNum);
-        levelsController.SetActive(levelNum);
-        Vector3 location = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
-        Camera.main.transform.position = new Vector3(location.x, Camera.main.transform.position.y, location.z);
-        */
+        int levelNumber = 0;
+        int.TryParse(labelInfo.GetField(AppUtils.JSON_FLOOR).str, out levelNumber);
+        if (levelNumber != LevelsController.activeLabelNumber)
+        {
+            Vector3 newCamLocation = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
+            levelsController.SetActive(levelNumber);
+
+            Camera.main.transform.position = new Vector3(
+                newCamLocation.x, Camera.main.transform.position.y, newCamLocation.z
+                );
+        }
+
+        
     }
 
     public void ShowInfoWindow(JSONObject label)
