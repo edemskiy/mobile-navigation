@@ -49,7 +49,7 @@ public class QRValidator : MonoBehaviour
             // прямое присваивание в текстовые поля интерфейса не работает;
             // скорее всего из-за асинхронности обработки qr-метки
             nameString = info.GetField(AppUtils.JSON_NAME).str;
-            fullNameString = info.GetField(AppUtils.JSON_NAME_FULL).str;
+            fullNameString = info.GetField(AppUtils.JSON_FULLNAME).str;
             aboutString = info.GetField(AppUtils.JSON_INFO).str;
             qrFound = true;
         }

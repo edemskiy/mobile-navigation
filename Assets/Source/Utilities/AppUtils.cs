@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class AppUtils
 {
     // public const string labelsURL = "http://127.0.0.1:8000/api/codes/";
-    public const string labelsURL = "http://88.201.132.192:8000/api/codes/";
+    public const string labelsURL = "http://lk.spiiras.nw.ru/command.php?a=externalrequest&request_type=departments";
     public const string labelsLocalFileName = "labels.txt";
 
     // Names
@@ -29,13 +29,15 @@ public class AppUtils
     // JSON fields
     public const string JSON_ID = "id";
     public const string JSON_NAME = "name";
-    public const string JSON_NAME_FULL = "name_full";
+    public const string JSON_FULLNAME = "fullname";
     public const string JSON_KEY = "key";
     public const string JSON_URL = "url";
     public const string JSON_DATA = "data";
     public const string JSON_LOCATION = "location";
+    public const string JSON_ROOMS = "rooms";
+    public const string JSON_NUMBER = "number";
     public const string JSON_FLOOR = "floor";
-    public const string JSON_INFO = "info";
+    public const string JSON_INFO = "description";
     public const string JSON_QR = "qrcode";
     public const string JSON_TYPE = "type";
 
@@ -51,6 +53,8 @@ public class AppUtils
 
     public static Vector3 stringToVector3(string sVector)
     {
+        if (sVector == null)
+            return Vector3.zero;
         if (sVector.StartsWith("(") && sVector.EndsWith(")"))
         {
             sVector = sVector.Substring(1, sVector.Length - 2);
@@ -88,5 +92,10 @@ public class AppUtils
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
         return results.Count > 0;
+    }
+
+    public static string DecodeUrlString(string url)
+    {
+        return Regex.Replace(url, @"\\u([0-9A-Fa-f]{4})", m => "" + (char)System.Convert.ToInt32(m.Groups[1].Value, 16));
     }
 }

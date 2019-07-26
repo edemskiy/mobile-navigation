@@ -6,15 +6,17 @@ using UnityEngine.UI;
 public class LabelButton : MonoBehaviour {
 
     public Text text;
+    private string number;
 
-    public void SetText(string newText)
+    public void SetParams(string number, string name)
     {
-        text.text = newText;
+        text.text = $"{number} – {name}";
+        this.number = number;
     }
 
     public void OnClick()
     {
         GetComponentInParent<LabelsButtonsStorage>()
-            .OnLabelButtonClick(LabelsList.self.getLabel(text.text));
+            .OnLabelButtonClick(LabelsList.self.getLabel(number));
     }
 }

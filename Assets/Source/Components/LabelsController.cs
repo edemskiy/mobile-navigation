@@ -119,8 +119,9 @@ public class LabelsController : MonoBehaviour
         {
             JSONObject label = LabelsList.self.getLabel(obj.name);
             string fullInfo = (obj.name
-                +label.GetField(AppUtils.JSON_NAME_FULL).str
-                +label.GetField(AppUtils.JSON_INFO).str)
+                + label[AppUtils.JSON_NAME].str
+                + label[AppUtils.JSON_FULLNAME].str
+                + label[AppUtils.JSON_INFO].str)
                 .ToLower();
 
             obj.gameObject.SetActive(fullInfo.Contains(s));
@@ -141,46 +142,6 @@ public class LabelsController : MonoBehaviour
         if(labelObj != null)
         {
             labelObj.GetComponent<TextMeshPro>().color = color;
-        }
-    }
-
-    // постобработка загруженных меток
-    private void LoadedLabelsListHandler(string labelsList)
-    {
-        JSONObject labelsListJSON = new JSONObject(labelsList);
-        if(labelsListJSON.list == null)
-        {
-            Debug.Log("labelsListJSON.list == null");
-            return;
-        }
-
-        // перебираем все метки
-        for (int i = 0; i < labelsListJSON.list.Count; i++)
-        {
-            JSONObject item = labelsListJSON.list[i];
-
-            if (item != null)
-            {
-                string name = Regex.Unescape(item.GetField(AppUtils.JSON_NAME).str);
-                LabelsList.self.update(name, item);
-
-                // создаем метку на карте
-                GameObject newLabel = GameObject.Instantiate(markerPrefab);
-                newLabel.transform.position = AppUtils.stringToVector3(
-                    item.GetField(AppUtils.JSON_LOCATION).str) + (Vector3.up * 0.5f);
-                newLabel.transform.SetParent(markersStore.transform);
-                newLabel.GetComponent<Label>().SetName(name);
-                
-                // добавляем в хранилище меток
-                labelsStorage.Add(name, newLabel);
-
-                // создаем кнопку в меню поиска
-                labelsButtonsStorage.AddLabelButton(name);
-            }
-            else
-            {
-                Debug.Log("MainScreen: labelsListJSON.list item == null ");
-            }
         }
     }
 
@@ -207,14 +168,67 @@ public class LabelsController : MonoBehaviour
                 Debug.Log(": Error: " + webRequest.error);
             }
             else
-            {                
+            {
+                JSONObject response = new JSONObject(webRequest.downloadHandler.text);
+                string data = AppUtils.DecodeUrlString(response[AppUtils.JSON_DATA].ToString());
                 using (StreamWriter streamWriter = File.CreateText(dataPath))
-                {
-                    streamWriter.Write(webRequest.downloadHandler.text);
+                {                    
+                    streamWriter.Write(data);
                 }
-                LoadedLabelsListHandler(webRequest.downloadHandler.text);
+                LoadedLabelsListHandler(data);
             }
         }
     }
-       
+
+    // постобработка загруженных меток
+    private void LoadedLabelsListHandler(string labelsList)
+    {
+        JSONObject labelsListJSON = new JSONObject(labelsList);
+        if (labelsListJSON.list == null)
+        {
+            Debug.Log("labelsListJSON.list == null");
+            return;
+        }
+
+        // перебираем все метки
+        for (int i = 0; i < labelsListJSON.list.Count; i++)
+        {
+            JSONObject department = labelsListJSON.list[i];
+
+            if (department != null)
+            {
+                JSONObject roomsListJSON = department[AppUtils.JSON_ROOMS];
+                for (int j = 0; j < roomsListJSON.list.Count; j++)
+                {
+                    JSONObject room = roomsListJSON.list[j];
+                    foreach (string key in department.keys)
+                    {
+                        if(key != AppUtils.JSON_ID && key != AppUtils.JSON_ROOMS)
+                        {
+                            room.AddField(key, department[key]);
+                        }
+                    }
+
+                    string roomNumber = room[AppUtils.JSON_NUMBER].str;
+
+                    LabelsList.self.update(roomNumber, room);
+                    GameObject newLabel = GameObject.Instantiate(markerPrefab);
+                    newLabel.transform.position = AppUtils.stringToVector3(
+                        room[AppUtils.JSON_LOCATION].str)+ (Vector3.up * 0.5f);
+                    newLabel.transform.SetParent(markersStore.transform);
+                    newLabel.GetComponent<Label>().SetName(roomNumber);
+
+                    // добавляем в хранилище меток
+                    labelsStorage.Add(roomNumber, newLabel);
+
+                    // создаем кнопку в меню поиска
+                    labelsButtonsStorage.AddLabelButton(roomNumber, room[AppUtils.JSON_NAME].str);
+                }
+            }
+            else
+            {
+                Debug.Log("MainScreen: labelsListJSON.list department == null ");
+            }
+        }
+    }
 }

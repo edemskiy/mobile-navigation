@@ -8,11 +8,11 @@ public class LabelsButtonsStorage : MonoBehaviour
     public GameObject buttonPrefab;
     public PathStartController pathStartController;
 
-    public void AddLabelButton(string name)
+    public void AddLabelButton(string number, string name)
     {
         GameObject newButton = Instantiate(buttonPrefab);
-        newButton.name = name;
-        newButton.GetComponent<LabelButton>().SetText(name);
+        newButton.name = number;
+        newButton.GetComponent<LabelButton>().SetParams(number, name);
         newButton.transform.SetParent(this.transform);
         newButton.transform.localScale = Vector3.one;
     }

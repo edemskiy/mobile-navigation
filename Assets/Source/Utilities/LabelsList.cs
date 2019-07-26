@@ -27,20 +27,7 @@ public class LabelsList
 		labelsMap = new Dictionary<string, JSONObject>();
 	}
 
-	/* [Сохранение и чтение списка локально]
-	public static Dictionary<string, JSONObject> readLabels()
-	{
-		string prefName = PlayerPrefs.GetString(PREF_NAME);
-		return AppUtils.stringToDic(prefName);
-	}
-
-	public static void sync()
-	{
-		PlayerPrefs.SetString(PREF_NAME, AppUtils.dicToString(labelsMap));
-	}
-	*/
-
-	public void clear()
+    public void clear()
 	{
 		labelsMap.Clear();
 	}
@@ -89,7 +76,7 @@ public class LabelsList
 	{
 		JSONObject json = new JSONObject();
 		json.SetField(AppUtils.JSON_NAME, AppUtils.fixInputString(name));
-        json.SetField(AppUtils.JSON_NAME_FULL, AppUtils.fixInputString(fullName));
+        json.SetField(AppUtils.JSON_FULLNAME, AppUtils.fixInputString(fullName));
 		json.SetField(AppUtils.JSON_LOCATION, location);
 		// Чтобы различать метки при чтении из QR кода
 		json.SetField(AppUtils.JSON_TYPE, "label");

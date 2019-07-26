@@ -115,14 +115,14 @@ public class PathStartController : MonoBehaviour
 
     public void OnRouteFromClick()
     {
-        SetPathStart(labelInfo.GetField(AppUtils.JSON_NAME).str);
+        SetPathStart(labelInfo.GetField(AppUtils.JSON_NUMBER).str);
         SetUpCamera();        
         labelInfoWindow.gameObject.SetActive(false);
     }
 
     public void OnRouteToClick()
     {
-        SetPathEndpoint(labelInfo.GetField(AppUtils.JSON_NAME).str);
+        SetPathEndpoint(labelInfo.GetField(AppUtils.JSON_NUMBER).str);
         SetUpCamera();
         labelInfoWindow.gameObject.SetActive(false);
     }
@@ -139,17 +139,16 @@ public class PathStartController : MonoBehaviour
             Camera.main.transform.position = new Vector3(
                 newCamLocation.x, Camera.main.transform.position.y, newCamLocation.z
                 );
-        }
-
-        
+        }        
     }
 
     public void ShowInfoWindow(JSONObject label)
     {
         labelInfo = label;
-        labelInfoWindow.audienceName.text = labelInfo.GetField(AppUtils.JSON_NAME).str;
-        labelInfoWindow.audienceFullName.text = labelInfo.GetField(AppUtils.JSON_NAME_FULL).str;
-        labelInfoWindow.audienceInfo.text = labelInfo.GetField(AppUtils.JSON_INFO).str;
+        labelInfoWindow.audienceName.text = $"{labelInfo[AppUtils.JSON_NUMBER].str}" +
+            $" – {labelInfo[AppUtils.JSON_NAME].str}";
+        labelInfoWindow.audienceFullName.text = labelInfo[AppUtils.JSON_FULLNAME].str;
+        labelInfoWindow.audienceInfo.text = labelInfo[AppUtils.JSON_INFO].str;
         
         labelInfoWindow.gameObject.SetActive(true);
     }
