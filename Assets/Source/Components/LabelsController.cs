@@ -17,7 +17,7 @@ public class LabelsController : MonoBehaviour
 
     private UnityAction<string> floorChangeListener;
 
-    private string dataPath;
+    private string dataPath, hashPath;
     private Dictionary<string, GameObject> labelsStorage;
 
     // для хранения точки касания экрана
@@ -33,6 +33,7 @@ public class LabelsController : MonoBehaviour
         markersStore = new GameObject("Markers");
         labelsStorage = new Dictionary<string, GameObject>();
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
+        hashPath = Path.Combine(Application.persistentDataPath, AppUtils.hashFileName);
         LoadLabels();
         floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
@@ -93,11 +94,16 @@ public class LabelsController : MonoBehaviour
     public void LoadLabels()
     {
         // если на устройстве есть файл с сохраненными метками то считываем из него
-        if (File.Exists(dataPath))
+        if (File.Exists(dataPath) && File.Exists(hashPath))
         {
-            using (StreamReader streamReader = File.OpenText(dataPath))
+            if (AppUtils.isOnline())
             {
-                LoadedLabelsListHandler(streamReader.ReadToEnd());                
+                StartCoroutine(CheckHash());
+            }
+            else
+            {
+                Debug.Log("offline mode");
+                LoadLabelsFromFile();
             }
         }
         // иначе загружаем с сервера
@@ -105,13 +111,151 @@ public class LabelsController : MonoBehaviour
         {
             if (!AppUtils.isOnline())
             {
-                Debug.Log("MainScreen: Нет подключения к интернету!");
+                Debug.Log("Необходимо подключение к интернету");
                 return;
             }
-            StartCoroutine(LoadLabelsFromServer(AppUtils.labelsURL));
+            StartCoroutine(LoadLabelsFromServer());
         }
     }
 
+    private void LoadLabelsFromFile()
+    {
+        Debug.Log("Reading labels from file");
+        using (StreamReader streamReader = File.OpenText(dataPath))
+        {
+            LoadedLabelsListHandler(streamReader.ReadToEnd());
+        }
+    }
+
+    IEnumerator CheckHash()
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(AppUtils.hashURL))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log(": Error: " + webRequest.error);
+            }
+            else
+            {
+                JSONObject response = new JSONObject(webRequest.downloadHandler.text);
+                string downloadedHash = response[AppUtils.JSON_DATA].ToString();
+
+                using (StreamReader streamReader = File.OpenText(hashPath))
+                {
+                    string localHash = streamReader.ReadToEnd();
+                    if(localHash == downloadedHash)
+                    {
+                        LoadLabelsFromFile();
+                    }
+                    else
+                    {
+                        Debug.Log("hashes don't match!");
+                        StartCoroutine(LoadLabelsFromServer());
+                    }
+                }
+            }
+        }
+    }
+
+    IEnumerator LoadLabelsFromServer()
+    {
+        Debug.Log("Download labels from server");
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(AppUtils.hashURL))
+        {
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log(": Error: " + webRequest.error);
+            }
+            else
+            {
+                JSONObject hashResponse = new JSONObject(webRequest.downloadHandler.text);
+                string hashData = hashResponse[AppUtils.JSON_DATA].ToString();
+                using (StreamWriter streamWriter = File.CreateText(hashPath))
+                {
+                    streamWriter.Write(hashData);
+                }
+            }
+        }
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(AppUtils.labelsURL))
+        {
+            // Request and wait for the desired page.
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isNetworkError)
+            {
+                Debug.Log(": Error: " + webRequest.error);
+            }
+            else
+            {
+                JSONObject labelsResponse = new JSONObject(webRequest.downloadHandler.text);
+                string labelsData = AppUtils.DecodeUrlString(labelsResponse[AppUtils.JSON_DATA].ToString());
+                using (StreamWriter streamWriter = File.CreateText(dataPath))
+                {
+                    streamWriter.Write(labelsData);
+                }
+                LoadedLabelsListHandler(labelsData);
+            }
+        }
+    }
+
+    // постобработка загруженных меток
+    private void LoadedLabelsListHandler(string labelsList)
+    {
+        JSONObject labelsListJSON = new JSONObject(labelsList);
+        if (labelsListJSON.list == null)
+        {
+            Debug.Log("labelsListJSON.list == null");
+            return;
+        }
+
+        // перебираем все метки
+        for (int i = 0; i < labelsListJSON.list.Count; i++)
+        {
+            JSONObject department = labelsListJSON.list[i];
+
+            if (department != null)
+            {
+                JSONObject roomsListJSON = department[AppUtils.JSON_ROOMS];
+                for (int j = 0; j < roomsListJSON.list.Count; j++)
+                {
+                    JSONObject room = roomsListJSON.list[j];
+                    foreach (string key in department.keys)
+                    {
+                        if (key != AppUtils.JSON_ID && key != AppUtils.JSON_ROOMS)
+                        {
+                            room.AddField(key, department[key]);
+                        }
+                    }
+
+                    string roomNumber = room[AppUtils.JSON_NUMBER].str;
+
+                    LabelsList.self.update(roomNumber, room);
+                    GameObject newLabel = GameObject.Instantiate(markerPrefab);
+                    newLabel.transform.position = AppUtils.stringToVector3(
+                        room[AppUtils.JSON_LOCATION].str) + (Vector3.up * 0.5f);
+                    newLabel.transform.SetParent(markersStore.transform);
+                    newLabel.GetComponent<Label>().SetName(roomNumber);
+
+                    // добавляем в хранилище меток
+                    labelsStorage.Add(roomNumber, newLabel);
+
+                    // создаем кнопку в меню поиска
+                    labelsButtonsStorage.AddLabelButton(roomNumber, room[AppUtils.JSON_NAME].str);
+                }
+            }
+            else
+            {
+                Debug.Log("MainScreen: labelsListJSON.list department == null ");
+            }
+        }
+    }
+    
     // фильтрация меток по имени или информации
     public void SearchLabels(string s)
     {
@@ -156,79 +300,5 @@ public class LabelsController : MonoBehaviour
         }
     }
 
-    IEnumerator LoadLabelsFromServer(string url)
-    {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
-        {
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.isNetworkError)
-            {
-                Debug.Log(": Error: " + webRequest.error);
-            }
-            else
-            {
-                JSONObject response = new JSONObject(webRequest.downloadHandler.text);
-                string data = AppUtils.DecodeUrlString(response[AppUtils.JSON_DATA].ToString());
-                using (StreamWriter streamWriter = File.CreateText(dataPath))
-                {                    
-                    streamWriter.Write(data);
-                }
-                LoadedLabelsListHandler(data);
-            }
-        }
-    }
-
-    // постобработка загруженных меток
-    private void LoadedLabelsListHandler(string labelsList)
-    {
-        JSONObject labelsListJSON = new JSONObject(labelsList);
-        if (labelsListJSON.list == null)
-        {
-            Debug.Log("labelsListJSON.list == null");
-            return;
-        }
-
-        // перебираем все метки
-        for (int i = 0; i < labelsListJSON.list.Count; i++)
-        {
-            JSONObject department = labelsListJSON.list[i];
-
-            if (department != null)
-            {
-                JSONObject roomsListJSON = department[AppUtils.JSON_ROOMS];
-                for (int j = 0; j < roomsListJSON.list.Count; j++)
-                {
-                    JSONObject room = roomsListJSON.list[j];
-                    foreach (string key in department.keys)
-                    {
-                        if(key != AppUtils.JSON_ID && key != AppUtils.JSON_ROOMS)
-                        {
-                            room.AddField(key, department[key]);
-                        }
-                    }
-
-                    string roomNumber = room[AppUtils.JSON_NUMBER].str;
-
-                    LabelsList.self.update(roomNumber, room);
-                    GameObject newLabel = GameObject.Instantiate(markerPrefab);
-                    newLabel.transform.position = AppUtils.stringToVector3(
-                        room[AppUtils.JSON_LOCATION].str)+ (Vector3.up * 0.5f);
-                    newLabel.transform.SetParent(markersStore.transform);
-                    newLabel.GetComponent<Label>().SetName(roomNumber);
-
-                    // добавляем в хранилище меток
-                    labelsStorage.Add(roomNumber, newLabel);
-
-                    // создаем кнопку в меню поиска
-                    labelsButtonsStorage.AddLabelButton(roomNumber, room[AppUtils.JSON_NAME].str);
-                }
-            }
-            else
-            {
-                Debug.Log("MainScreen: labelsListJSON.list department == null ");
-            }
-        }
-    }
+    
 }

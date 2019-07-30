@@ -8,7 +8,9 @@ public class AppUtils
 {
     // public const string labelsURL = "http://127.0.0.1:8000/api/codes/";
     public const string labelsURL = "http://lk.spiiras.nw.ru/command.php?a=externalrequest&request_type=departments";
+    public const string hashURL = "http://lk.spiiras.nw.ru/command.php?a=externalrequest&request_type=departments&format=crc";
     public const string labelsLocalFileName = "labels.txt";
+    public const string hashFileName = "hash.txt";
 
     // Names
     public const string ButtonFrom_DefaultName = "ОТКУДА";
