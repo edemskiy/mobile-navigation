@@ -23,20 +23,7 @@ public class PathStartController : MonoBehaviour
         string qrJSONString = PlayerPrefs.GetString(AppUtils.JSON_QR, "NaN");
         if (qrJSONString != "NaN")
         {
-            Debug.Log(qrJSONString);
             labelInfo = new JSONObject(qrJSONString);
-            
-            /*
-             * удалить, когда в метках будет инфа об этаже!
-             */
-            int levelNum = 0;
-            int.TryParse(labelInfo.GetField(AppUtils.JSON_FLOOR).str, out levelNum);
-            levelsController.SetActive(levelNum);
-            Vector3 location = AppUtils.stringToVector3(labelInfo.GetField(AppUtils.JSON_LOCATION).str);
-            Camera.main.transform.position = new Vector3(location.x, Camera.main.transform.position.y, location.z);
-            /* ---------------------------- */
-
-            SetUpCamera();
             OnRouteFromClick();
         }
         else

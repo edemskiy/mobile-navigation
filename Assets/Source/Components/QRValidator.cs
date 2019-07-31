@@ -9,7 +9,7 @@ public class QRValidator : MonoBehaviour
     public LabelInfoWindow labelInfoWindow; // окно с информацией о помещении
 
     private UnityAction<string> qrDetectedListener; 
-    private string nameString, fullNameString, aboutString;
+    private string nameString, numberString, fullNameString, aboutString;
     private string labelJSON;
     private bool qrFound;
 
@@ -48,9 +48,10 @@ public class QRValidator : MonoBehaviour
 
             // прямое присваивание в текстовые поля интерфейса не работает;
             // скорее всего из-за асинхронности обработки qr-метки
-            nameString = info.GetField(AppUtils.JSON_NAME).str;
-            fullNameString = info.GetField(AppUtils.JSON_FULLNAME).str;
-            aboutString = info.GetField(AppUtils.JSON_INFO).str;
+            nameString = info[AppUtils.JSON_NAME].str;
+            numberString = info[AppUtils.JSON_NUMBER].str;
+            fullNameString = info[AppUtils.JSON_FULLNAME].str;
+            aboutString = info[AppUtils.JSON_INFO].str;
             qrFound = true;
         }
         else
@@ -65,7 +66,7 @@ public class QRValidator : MonoBehaviour
     {
         /* если маркер найден, то записываем инфу в PlayerPrefs,
          * что бы потом ее можно было считать в другой сцене.
-         * Иначе - очищаем все поля в PlayerPrefs
+         * Иначе - очищаем поле PlayerPrefs с json метки
          */
     
         if (qrFound)
@@ -74,7 +75,7 @@ public class QRValidator : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.DeleteAll();
+            PlayerPrefs.DeleteKey(AppUtils.JSON_QR);
         }
         
         // переходим на сцену навигации
@@ -89,7 +90,7 @@ public class QRValidator : MonoBehaviour
 
     void Update()
     {
-        labelInfoWindow.audienceName.text = nameString;
+        labelInfoWindow.audienceName.text = $"{numberString} – {nameString}";
         labelInfoWindow.audienceFullName.text = fullNameString;
         labelInfoWindow.audienceInfo.text = aboutString;
         

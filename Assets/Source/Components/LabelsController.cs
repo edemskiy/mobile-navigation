@@ -96,14 +96,11 @@ public class LabelsController : MonoBehaviour
         // если на устройстве есть файл с сохраненными метками то считываем из него
         if (File.Exists(dataPath) && File.Exists(hashPath))
         {
+            LoadLabelsFromFile();
+
             if (AppUtils.isOnline())
             {
                 StartCoroutine(CheckHash());
-            }
-            else
-            {
-                Debug.Log("offline mode");
-                LoadLabelsFromFile();
             }
         }
         // иначе загружаем с сервера
@@ -146,11 +143,7 @@ public class LabelsController : MonoBehaviour
                 using (StreamReader streamReader = File.OpenText(hashPath))
                 {
                     string localHash = streamReader.ReadToEnd();
-                    if(localHash == downloadedHash)
-                    {
-                        LoadLabelsFromFile();
-                    }
-                    else
+                    if(localHash != downloadedHash)                    
                     {
                         Debug.Log("hashes don't match!");
                         StartCoroutine(LoadLabelsFromServer());
@@ -241,7 +234,7 @@ public class LabelsController : MonoBehaviour
                         room[AppUtils.JSON_LOCATION].str) + (Vector3.up * 0.5f);
                     newLabel.transform.SetParent(markersStore.transform);
                     newLabel.GetComponent<Label>().SetName(roomNumber);
-
+                    
                     // добавляем в хранилище меток
                     labelsStorage.Add(roomNumber, newLabel);
 
@@ -298,7 +291,5 @@ public class LabelsController : MonoBehaviour
                 .GetField(AppUtils.JSON_FLOOR).str == LevelsController.activeLabelNumber.ToString()
                 );
         }
-    }
-
-    
+    }   
 }

@@ -52,8 +52,18 @@ public class CameraScreen : MonoBehaviour {
     /* ----------------- */    
     
     IEnumerator Start () {
+
         // ждем подтверждения разрешения на исползование камеры
         yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
+
+        if (Application.HasUserAuthorization(UserAuthorization.WebCam))
+        {
+            Debug.Log("camera permitted");
+        }
+        else
+        {
+            Debug.Log("camera denied");
+        }
 
         Screen.orientation = ScreenOrientation.Portrait;
         frames = 0;
@@ -228,7 +238,7 @@ public class CameraScreen : MonoBehaviour {
                     #endif
 
                     EventManager.TriggerEvent(AppUtils.qrDetected, data.Text);
-                    Debug.Log("qr found");
+                    Debug.Log($"qr found: {data.Text}");
                 }
             }
             catch (System.Exception e)
