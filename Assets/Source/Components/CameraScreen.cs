@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ArucoModule;
 using ZXing;
@@ -283,6 +285,21 @@ public class CameraScreen : MonoBehaviour {
         }
     }
 
+    public void ShowMap()
+    {
+        string labelsPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsFileName);
+
+        if (!File.Exists(labelsPath) && !AppUtils.isOnline())
+        {
+            info.text = "необходимо подключение к интернету";
+        }
+        else
+        {
+            TurnOffCam();
+            SceneManager.LoadScene(AppUtils.NavigationSceneName);
+        }
+    }
+
     // переключение камеры (не используется)
     public void SwitchCam()
     {
@@ -306,7 +323,7 @@ public class CameraScreen : MonoBehaviour {
     public void TurnOffCam()
     {
         if (camAvailable)
-        { 
+        {
             backCam.Stop();
             camAvailable = false;
         }

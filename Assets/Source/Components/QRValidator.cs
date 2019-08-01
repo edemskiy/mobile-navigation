@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class QRValidator : MonoBehaviour
 {
     public GameObject serviceWindow; // окно для вывода ошибок
     public LabelInfoWindow labelInfoWindow; // окно с информацией о помещении
+    public CameraScreen cameraScreen;
 
     private UnityAction<string> qrDetectedListener; 
     private string nameString, numberString, fullNameString, aboutString;
@@ -52,6 +52,8 @@ public class QRValidator : MonoBehaviour
             numberString = info[AppUtils.JSON_NUMBER].str;
             fullNameString = info[AppUtils.JSON_FULLNAME].str;
             aboutString = info[AppUtils.JSON_INFO].str;
+
+            PlayerPrefs.SetString(AppUtils.JSON_QR, labelJSON);
             qrFound = true;
         }
         else
@@ -84,6 +86,7 @@ public class QRValidator : MonoBehaviour
 
     public void CloseButtonOnClick()
     {
+        PlayerPrefs.DeleteKey(AppUtils.JSON_QR);
         qrFound = false;
         labelInfoWindow.gameObject.SetActive(false);
     }

@@ -32,7 +32,7 @@ public class LabelsController : MonoBehaviour
     {
         markersStore = new GameObject("Markers");
         labelsStorage = new Dictionary<string, GameObject>();
-        dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsLocalFileName);
+        dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsFileName);
         hashPath = Path.Combine(Application.persistentDataPath, AppUtils.hashFileName);
         LoadLabels();
         floorChangeListener = new UnityAction<string>(OnFloorChange);
