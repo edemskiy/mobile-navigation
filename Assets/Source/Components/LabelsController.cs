@@ -34,7 +34,6 @@ public class LabelsController : MonoBehaviour
         labelsStorage = new Dictionary<string, GameObject>();
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsFileName);
         hashPath = Path.Combine(Application.persistentDataPath, AppUtils.hashFileName);
-        LoadLabels();
         floorChangeListener = new UnityAction<string>(OnFloorChange);
     }
 
@@ -96,11 +95,13 @@ public class LabelsController : MonoBehaviour
         // если на устройстве есть файл с сохраненными метками то считываем из него
         if (File.Exists(dataPath) && File.Exists(hashPath))
         {
-            LoadLabelsFromFile();
-
             if (AppUtils.isOnline())
             {
                 StartCoroutine(CheckHash());
+            }
+            else
+            {
+                LoadLabelsFromFile();
             }
         }
         // иначе загружаем с сервера
@@ -147,6 +148,10 @@ public class LabelsController : MonoBehaviour
                     {
                         Debug.Log("hashes don't match!");
                         StartCoroutine(LoadLabelsFromServer());
+                    }
+                    else
+                    {
+                        LoadLabelsFromFile();
                     }
                 }
             }
