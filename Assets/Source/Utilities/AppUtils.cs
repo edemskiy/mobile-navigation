@@ -27,6 +27,7 @@ public class AppUtils
     // Events
     public const string floorChanged = "floorChanged";
     public const string qrDetected = "qrDetected";
+    public const string labelsLoaded = "labelsLoaded";
 
     // JSON fields
     public const string JSON_ID = "id";

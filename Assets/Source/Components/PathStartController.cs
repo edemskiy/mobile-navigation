@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -13,13 +14,18 @@ public class PathStartController : MonoBehaviour
     public Button pathFromButton, pathToButton;
     private JSONObject labelInfo;
 
+    private UnityAction<string> labelsLoadListener;
+
     void Start()
     {
         TouchScreenKeyboard.hideInput = true;
-
+        labelsLoadListener = new UnityAction<string>(OnLabelsLoad);
         activeLabelFromName = "";
-        activeLabelToName = "";
-        labelsController.LoadLabels();
+        activeLabelToName = "";       
+    }
+
+    private void OnLabelsLoad(string s)
+    {
         string qrJSONString = PlayerPrefs.GetString(AppUtils.JSON_QR, "NaN");
         if (qrJSONString != "NaN")
         {

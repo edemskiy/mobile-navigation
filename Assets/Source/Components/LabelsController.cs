@@ -35,6 +35,8 @@ public class LabelsController : MonoBehaviour
         dataPath = Path.Combine(Application.persistentDataPath, AppUtils.labelsFileName);
         hashPath = Path.Combine(Application.persistentDataPath, AppUtils.hashFileName);
         floorChangeListener = new UnityAction<string>(OnFloorChange);
+
+        LoadLabels();
     }
 
     private void OnEnable()
@@ -252,6 +254,7 @@ public class LabelsController : MonoBehaviour
                 Debug.Log("MainScreen: labelsListJSON.list department == null ");
             }
         }
+        EventManager.TriggerEvent(AppUtils.labelsLoaded);
     }
     
     // фильтрация меток по имени или информации
