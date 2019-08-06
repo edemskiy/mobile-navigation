@@ -44,6 +44,9 @@ public class AppUtils
     public const string JSON_QR = "qrcode";
     public const string JSON_TYPE = "type";
 
+    // integers
+    public const int DefaultFloorNumber = 4;
+
     public static bool isOnline()
     {
         return Application.internetReachability != NetworkReachability.NotReachable;

@@ -16,12 +16,26 @@ public class PathStartController : MonoBehaviour
 
     private UnityAction<string> labelsLoadListener;
 
+    private void Awake()
+    {
+        labelsLoadListener = new UnityAction<string>(OnLabelsLoad);
+    }
+
     void Start()
     {
         TouchScreenKeyboard.hideInput = true;
-        labelsLoadListener = new UnityAction<string>(OnLabelsLoad);
         activeLabelFromName = "";
-        activeLabelToName = "";       
+        activeLabelToName = "";
+    }
+
+    private void OnEnable()
+    {
+        EventManager.StartListening(AppUtils.labelsLoaded, labelsLoadListener);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening(AppUtils.labelsLoaded, labelsLoadListener);
     }
 
     private void OnLabelsLoad(string s)
@@ -34,7 +48,7 @@ public class PathStartController : MonoBehaviour
         }
         else
         {
-            levelsController.SetActive(4);
+            levelsController.SetActive(AppUtils.DefaultFloorNumber);
         }
     }
 
