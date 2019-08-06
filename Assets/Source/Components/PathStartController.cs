@@ -162,6 +162,7 @@ public class PathStartController : MonoBehaviour
     
     public void ShowScaner()
     {
+        PlayerPrefs.DeleteKey(AppUtils.JSON_QR);
         LevelsController.activeLabelNumber = 0;
         SceneManager.LoadScene(AppUtils.ScanerSceneName);
     }
