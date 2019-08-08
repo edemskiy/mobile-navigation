@@ -23,7 +23,7 @@ public class PathStartController : MonoBehaviour
 
     void Start()
     {
-        TouchScreenKeyboard.hideInput = true;
+        TouchScreenKeyboard.hideInput = true; // по идее для скрытия поля ввода на клаве андроида. Не работает(
         activeLabelFromName = "";
         activeLabelToName = "";
     }

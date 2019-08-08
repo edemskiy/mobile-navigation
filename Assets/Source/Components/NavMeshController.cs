@@ -87,6 +87,9 @@ public class NavMeshController: MonoBehaviour
     // визуализация одного отрезка пути
     void DrawLine(Vector3 start, Vector3 end, Color color)
     {
+        if (start.y != end.y) // не отображаем наклонные линии пути (на лестницах)?
+            return;
+
         GameObject myLine = new GameObject();
         myLine.transform.position = start + Vector3.up * 0.2f;
         myLine.AddComponent<LineRenderer>();
@@ -168,7 +171,7 @@ public class NavMeshController: MonoBehaviour
     {
         foreach (Transform line in pathStore.transform)
         {
-            line.gameObject.SetActive(line.gameObject.transform.position.y < LevelsController.activeLevelPosition.y + 1.3f);
+            line.gameObject.SetActive(line.gameObject.transform.position.y < LevelsController.activeLevelPosition.y - 2f);
         }
         player.SetActive((player.transform.position.y < LevelsController.activeLevelPosition.y) && (player.transform.position != Vector3.zero));
         target.SetActive((target.transform.position.y < LevelsController.activeLevelPosition.y) && (target.transform.position != Vector3.zero));
